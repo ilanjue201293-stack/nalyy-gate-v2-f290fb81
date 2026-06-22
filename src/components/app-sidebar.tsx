@@ -7,7 +7,6 @@ import {
   BarChart3,
   Settings,
   PlusCircle,
-  Sparkles,
   LogOut,
 } from "lucide-react";
 import {
