@@ -290,6 +290,3 @@ function Panel({
     </div>
   );
 }
-
-// Unused export kept for incidental imports
-export { X };
