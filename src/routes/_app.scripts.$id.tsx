@@ -104,9 +104,6 @@ function ScriptDetails() {
         </div>
         <div className="mt-4 flex flex-wrap gap-2 text-xs">
           <Badge variant="outline" className="border-border">
-            HWID Lock: {script.hwidLock ? "ON" : "OFF"}
-          </Badge>
-          <Badge variant="outline" className="border-border">
             Role: {script.discordRole}
           </Badge>
           <Badge variant="outline" className="border-border">
