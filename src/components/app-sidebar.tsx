@@ -23,6 +23,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { Logo } from "@/components/logo";
 
 const nav = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
