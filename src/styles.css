@@ -77,10 +77,10 @@
   --muted: oklch(0.2 0.03 280);
   --muted-foreground: oklch(0.7 0.03 270);
 
-  --accent: oklch(0.7 0.2 240);             /* neon blue */
-  --accent-foreground: oklch(0.1 0.02 280);
+  --accent: oklch(0.62 0.24 268);           /* logo blue */
+  --accent-foreground: oklch(0.99 0 0);
 
-  --neon: oklch(0.78 0.18 220);
+  --neon: oklch(0.7 0.22 285);
   --neon-foreground: oklch(0.1 0.02 280);
 
   --destructive: oklch(0.65 0.24 25);
