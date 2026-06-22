@@ -1,14 +1,11 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { ArrowLeft, Upload, KeyRound, Sparkles } from "lucide-react";
+import { ArrowLeft, Upload, KeyRound, Sparkles, Gift, TimerReset, Lock } from "lucide-react";
 import { PageHeader } from "@/components/page-header";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { games } from "@/lib/mock-data";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_app/scripts/add")({
@@ -23,10 +20,14 @@ function genKey() {
   );
 }
 
+type LicenseMode = "free" | "trial" | "key";
+
 function AddScript() {
   const navigate = useNavigate();
   const [apiKey, setApiKey] = useState(genKey());
-  const [hwid, setHwid] = useState(true);
+  const [mode, setMode] = useState<LicenseMode>("key");
+  const [trialAmount, setTrialAmount] = useState(30);
+  const [trialUnit, setTrialUnit] = useState<"seconds" | "minutes" | "hours">("minutes");
 
   return (
     <div className="space-y-6">
@@ -39,7 +40,7 @@ function AddScript() {
 
       <PageHeader
         title="Add a new script"
-        description="Configure your script, generate an API key and ship it to your community."
+        description="Configure your script and ship it to your community."
       />
 
       <form
@@ -55,22 +56,9 @@ function AddScript() {
             <Field label="Script name" required>
               <Input required placeholder="e.g. Aurora Hub" />
             </Field>
-            <Field label="Description">
-              <Textarea rows={4} placeholder="What does your script do?" />
+            <Field label="Linked Discord role">
+              <Input placeholder="e.g. Aurora Premium" />
             </Field>
-            <div className="grid gap-4 sm:grid-cols-2">
-              <Field label="Target game" required>
-                <Select defaultValue="Universal">
-                  <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    {games.map((g) => <SelectItem key={g} value={g}>{g}</SelectItem>)}
-                  </SelectContent>
-                </Select>
-              </Field>
-              <Field label="Linked Discord role">
-                <Input placeholder="e.g. Aurora Premium" />
-              </Field>
-            </div>
           </Card>
 
           <Card title="Script file">
@@ -82,16 +70,58 @@ function AddScript() {
             </label>
           </Card>
 
-          <Card title="Security">
-            <div className="flex items-start justify-between gap-4 rounded-xl border border-border bg-background/40 p-4">
-              <div className="min-w-0">
-                <div className="text-sm font-medium">HWID Lock</div>
-                <div className="mt-1 text-xs text-muted-foreground">
-                  Bind keys to a single hardware ID. Prevents resellers and account sharing.
-                </div>
-              </div>
-              <Switch checked={hwid} onCheckedChange={setHwid} className="shrink-0" />
+          <Card title="Access mode">
+            <div className="grid gap-3 sm:grid-cols-3">
+              <ModeCard
+                active={mode === "free"}
+                onClick={() => setMode("free")}
+                icon={Gift}
+                title="Free"
+                desc="No key required. Anyone can execute."
+              />
+              <ModeCard
+                active={mode === "trial"}
+                onClick={() => setMode("trial")}
+                icon={TimerReset}
+                title="Trial"
+                desc="Free time-limited access per user."
+              />
+              <ModeCard
+                active={mode === "key"}
+                onClick={() => setMode("key")}
+                icon={Lock}
+                title="Key system"
+                desc="Users must redeem a key to access."
+              />
             </div>
+
+            {mode === "trial" && (
+              <div className="mt-4 rounded-xl border border-border bg-background/40 p-4">
+                <Label className="text-xs uppercase tracking-widest text-muted-foreground">
+                  Trial duration
+                </Label>
+                <div className="mt-2 flex gap-2">
+                  <Input
+                    type="number"
+                    min={1}
+                    value={trialAmount}
+                    onChange={(e) => setTrialAmount(Number(e.target.value))}
+                    className="w-32"
+                  />
+                  <Select value={trialUnit} onValueChange={(v) => setTrialUnit(v as typeof trialUnit)}>
+                    <SelectTrigger className="w-40"><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="seconds">Seconds</SelectItem>
+                      <SelectItem value="minutes">Minutes</SelectItem>
+                      <SelectItem value="hours">Hours</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <p className="mt-2 text-xs text-muted-foreground">
+                  Each user gets {trialAmount} {trialUnit} of free access before needing a key.
+                </p>
+              </div>
+            )}
           </Card>
         </div>
 
@@ -123,6 +153,36 @@ function AddScript() {
         </div>
       </form>
     </div>
+  );
+}
+
+function ModeCard({
+  active,
+  onClick,
+  icon: Icon,
+  title,
+  desc,
+}: {
+  active: boolean;
+  onClick: () => void;
+  icon: React.ComponentType<{ className?: string }>;
+  title: string;
+  desc: string;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`group rounded-xl border p-4 text-left transition ${
+        active
+          ? "border-primary/60 bg-primary/10 shadow-[0_0_24px_-8px_oklch(0.62_0.26_295/0.7)]"
+          : "border-border bg-background/40 hover:border-primary/30"
+      }`}
+    >
+      <Icon className={`h-5 w-5 ${active ? "text-primary" : "text-muted-foreground"}`} />
+      <div className="mt-2 font-display text-sm font-semibold">{title}</div>
+      <div className="mt-1 text-xs text-muted-foreground">{desc}</div>
+    </button>
   );
 }
 
