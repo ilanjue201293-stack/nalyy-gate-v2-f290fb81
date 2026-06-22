@@ -71,9 +71,7 @@ function Landing() {
       <header className="sticky top-0 z-40 border-b border-border/50 bg-background/60 backdrop-blur-xl">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
           <Link to="/" className="flex items-center gap-2">
-            <div className="grid h-9 w-9 place-items-center rounded-lg bg-gradient-primary glow-primary">
-              <Sparkles className="h-4 w-4 text-primary-foreground" />
-            </div>
+            <Logo className="h-9 w-9" />
             <span className="font-display text-lg font-bold text-gradient">Nalyy Gate</span>
           </Link>
           <nav className="hidden items-center gap-8 text-sm text-muted-foreground md:flex">
