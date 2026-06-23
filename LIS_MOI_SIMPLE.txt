@@ -1,0 +1,45 @@
+NALYY GATE - VERSION SIMPLE
+
+Tu n'as pas besoin de taper pnpm.
+
+1. Va dans Discord Developer Portal.
+2. Cree ton application + bot.
+3. Dans OAuth2, ajoute cette Redirect URI:
+   http://localhost:8080/api/auth/discord/callback
+4. Double-clique RUN_1_CONFIGURE.cmd
+5. Colle:
+   - CLIENT ID
+   - CLIENT SECRET
+   - BOT TOKEN
+   - ton USER ID Discord admin si tu l'as, sinon Entrer
+6. Quand c'est fini, double-clique RUN_2_START_ALL.cmd
+
+Le site sera ici:
+http://localhost:8080
+
+Pour lancer seulement le site:
+RUN_SITE_ONLY.cmd
+
+Pour lancer seulement le bot:
+RUN_BOT_ONLY.cmd
+
+Si tu vois une erreur EPERM avec query_engine-windows.dll.node:
+1. Ferme les fenetres du site et du bot.
+2. Lance RUN_FIX_PRISMA_LOCK.cmd
+3. Puis relance RUN_2_START_ALL.cmd
+
+Si le dashboard revient au login quand tu changes d'onglet:
+1. Ferme le site.
+2. Relance RUN_2_START_ALL.cmd
+3. Reconnecte-toi depuis http://localhost:8080/login
+4. Si ca persiste, teste dans une fenetre InPrivate pour repartir sans ancien cookie.
+
+Si le loader Roblox genere avec localhost et fait une erreur:
+1. Lance RUN_FIX_LOADER_URL.cmd
+2. Relance RUN_BOT_ONLY.cmd
+3. Refais Get Script dans Discord pour recevoir le nouveau loader.
+
+Apres une mise a jour qui change Free / Trial / Key:
+1. Ferme le site et le bot.
+2. Lance RUN_UPDATE_DATABASE.cmd
+3. Relance RUN_2_START_ALL.cmd

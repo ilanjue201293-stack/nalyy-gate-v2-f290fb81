@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { KeyRound, Copy, Trash2, Plus, Infinity as InfinityIcon, UserLock, Shield, Zap } from "lucide-react";
 import { PageHeader } from "@/components/page-header";
@@ -12,6 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import { KeyStatus } from "./_app.dashboard";
 import { scripts, keys } from "@/lib/mock-data";
 import { toast } from "sonner";
+import { apiClient } from "@/lib/api-client";
 
 export const Route = createFileRoute("/_app/keys")({
   head: () => ({ meta: [{ title: "Key Manager — Nalyy Gate" }] }),
@@ -20,7 +22,11 @@ export const Route = createFileRoute("/_app/keys")({
 
 function KeyManager() {
   const [filterStatus, setFilterStatus] = useState("all");
-  const filtered = keys.filter((k) => filterStatus === "all" || k.status === filterStatus);
+  const scriptsQuery = useQuery({ queryKey: ["scripts"], queryFn: apiClient.scripts });
+  const keysQuery = useQuery({ queryKey: ["keys"], queryFn: apiClient.keys });
+  const liveScripts = scriptsQuery.data ?? scripts;
+  const liveKeys = keysQuery.data ?? keys;
+  const filtered = liveKeys.filter((k) => filterStatus === "all" || k.status === filterStatus);
 
   const [lifetime, setLifetime] = useState(false);
   const [durationAmount, setDurationAmount] = useState(30);
@@ -32,6 +38,9 @@ function KeyManager() {
   const [oneTime, setOneTime] = useState(false);
   const [redeemLock, setRedeemLock] = useState(false);
   const [discordId, setDiscordId] = useState("");
+  const [scriptId, setScriptId] = useState(liveScripts[0]?.id ?? "");
+  const [quantity, setQuantity] = useState(1);
+  const [note, setNote] = useState("");
 
   return (
     <div className="space-y-6">
@@ -50,14 +59,30 @@ function KeyManager() {
             className="space-y-4"
             onSubmit={(e) => {
               e.preventDefault();
-              toast.success("Keys generated (demo)");
+              apiClient
+                .createKeys({
+                  scriptId,
+                  quantity,
+                  durationAmount,
+                  durationUnit,
+                  lifetime,
+                  oneTime,
+                  maxHwids: hwidLock ? hwidCount : 1,
+                  redeemedByDiscordId: redeemLock ? discordId : undefined,
+                  note,
+                })
+                .then(() => {
+                  toast.success("Keys generated");
+                  keysQuery.refetch();
+                })
+                .catch((error) => toast.error(error.message));
             }}
           >
             <Field label="Script">
-              <Select defaultValue={scripts[0].id}>
+              <Select value={scriptId || liveScripts[0]?.id} onValueChange={setScriptId}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
-                  {scripts.map((s) => (
+                  {liveScripts.map((s) => (
                     <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>
                   ))}
                 </SelectContent>
@@ -65,7 +90,7 @@ function KeyManager() {
             </Field>
 
             <Field label="Quantity">
-              <Input type="number" min={1} max={500} defaultValue={1} disabled={redeemLock || oneTime} />
+              <Input type="number" min={1} max={500} value={quantity} onChange={(e) => setQuantity(Number(e.target.value))} disabled={redeemLock || oneTime} />
               {(redeemLock || oneTime) && (
                 <p className="text-[10px] text-muted-foreground">
                   Quantity locked to 1 with current options.
@@ -153,7 +178,7 @@ function KeyManager() {
             )}
 
             <Field label="Internal note">
-              <Textarea rows={2} placeholder="e.g. Discord giveaway batch #4" />
+              <Textarea rows={2} value={note} onChange={(e) => setNote(e.target.value)} placeholder="e.g. Discord community batch" />
             </Field>
             <Button type="submit" variant="hero" className="w-full">
               <Plus className="h-4 w-4" /> Generate
@@ -217,7 +242,21 @@ function KeyManager() {
                         >
                           <Copy className="h-4 w-4" />
                         </Button>
-                        <Button variant="ghost" size="icon" className="text-destructive hover:bg-destructive/15">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="text-destructive hover:bg-destructive/15"
+                          onClick={() => {
+                            apiClient
+                              .deleteKey(k.id)
+                              .then(() => {
+                                toast.success("Key deleted");
+                                keysQuery.refetch();
+                              })
+                              .catch((error) => toast.error(error.message));
+                          }}
+                        >
+                          <span className="sr-only">Delete key</span>
                           <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>

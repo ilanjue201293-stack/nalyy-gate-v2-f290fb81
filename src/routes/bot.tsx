@@ -2,18 +2,18 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowLeft, Bot, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/logo";
+import { PublicAuthButton } from "@/components/public-auth-button";
 
-// Paste your Discord OAuth invite link here when ready.
-const BOT_INVITE_URL = "";
+const BOT_INVITE_URL =
+  "https://discord.com/oauth2/authorize?client_id=1518955268774559764&permissions=2415971328&integration_type=0&scope=bot+applications.commands";
 
 export const Route = createFileRoute("/bot")({
   head: () => ({
     meta: [
-      { title: "Nalyy Gate Bot — Discord companion" },
+      { title: "Nalyy Gate Bot - Discord companion" },
       {
         name: "description",
-        content:
-          "Add the official Nalyy Gate Discord bot to your server to manage keys and whitelists.",
+        content: "Add the official Nalyy Gate Discord bot to your server to manage keys and whitelists.",
       },
       { property: "og:title", content: "Nalyy Gate Bot" },
       {
@@ -40,9 +40,7 @@ function BotPage() {
             <Link to="/pricing" className="hover:text-foreground">Pricing</Link>
             <Link to="/bot" className="text-foreground">Bot</Link>
           </nav>
-          <Button asChild variant="hero" size="sm">
-            <Link to="/login">Login</Link>
-          </Button>
+          <PublicAuthButton variant="hero" size="sm" />
         </div>
       </header>
 
@@ -57,19 +55,18 @@ function BotPage() {
             <ArrowLeft className="h-4 w-4" /> Back to home
           </Link>
 
-          <div className="mt-10 text-center">
-            <div className="mx-auto inline-grid h-24 w-24 place-items-center rounded-3xl border border-primary/30 bg-primary/10 backdrop-blur">
+          <div className="mt-10 flex flex-col items-center text-center">
+            <div className="inline-grid h-24 w-24 place-items-center rounded-3xl border border-primary/30 bg-primary/10 backdrop-blur">
               <Logo className="h-16 w-16" />
             </div>
-            <div className="mx-auto mt-6 inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-4 py-1.5 text-xs uppercase tracking-widest text-primary">
+            <div className="mt-8 inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-4 py-1.5 text-xs uppercase tracking-widest text-primary">
               <Bot className="h-3 w-3" /> Discord Bot
             </div>
             <h1 className="mt-5 font-display text-4xl font-bold sm:text-5xl">
               Nalyy Gate <span className="text-gradient">Bot</span>
             </h1>
             <p className="mx-auto mt-4 max-w-xl text-muted-foreground">
-              The official Discord companion for Nalyy Gate — bring your gate
-              right inside your community.
+              The official Discord companion for Nalyy Gate. Bring your key system, panels and roles right inside your community.
             </p>
           </div>
 
@@ -80,21 +77,11 @@ function BotPage() {
             </p>
 
             <div className="mt-6 flex justify-center">
-              {BOT_INVITE_URL ? (
-                <Button asChild variant="hero" size="lg">
-                  <a href={BOT_INVITE_URL} target="_blank" rel="noreferrer">
-                    Invite to Discord <ExternalLink className="h-4 w-4" />
-                  </a>
-                </Button>
-              ) : (
-                <div className="w-full max-w-md rounded-xl border border-dashed border-border bg-background/40 p-5 text-xs text-muted-foreground">
-                  OAuth invite link goes here — paste your Discord bot URL into{" "}
-                  <code className="rounded bg-muted/50 px-1.5 py-0.5 font-mono text-[11px] text-foreground">
-                    BOT_INVITE_URL
-                  </code>{" "}
-                  in <span className="font-mono">src/routes/bot.tsx</span>.
-                </div>
-              )}
+              <Button asChild variant="hero" size="lg">
+                <a href={BOT_INVITE_URL} target="_blank" rel="noreferrer">
+                  Invite to Discord <ExternalLink className="h-4 w-4" />
+                </a>
+              </Button>
             </div>
           </div>
 

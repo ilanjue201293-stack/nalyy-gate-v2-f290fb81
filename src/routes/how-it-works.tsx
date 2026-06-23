@@ -1,7 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { FileCode2, KeyRound, ShieldCheck, ArrowLeft, ArrowRight } from "lucide-react";
+import { FileCode2, KeyRound, ShieldCheck, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/logo";
+import { PublicAuthButton } from "@/components/public-auth-button";
 
 export const Route = createFileRoute("/how-it-works")({
   head: () => ({
@@ -54,9 +55,7 @@ function HowItWorks() {
             <Link to="/how-it-works" className="text-foreground">How it works</Link>
             <Link to="/pricing" className="hover:text-foreground">Pricing</Link>
           </nav>
-          <Button asChild variant="hero" size="sm">
-            <Link to="/login">Login</Link>
-          </Button>
+          <PublicAuthButton variant="hero" size="sm" />
         </div>
       </header>
 
@@ -101,11 +100,7 @@ function HowItWorks() {
           </div>
 
           <div className="mt-14 text-center">
-            <Button asChild variant="hero" size="lg">
-              <Link to="/login">
-                Get started <ArrowRight className="h-4 w-4" />
-              </Link>
-            </Button>
+            <PublicAuthButton variant="hero" size="lg" loginLabel="Get started" />
           </div>
         </div>
       </section>

@@ -1,0 +1,172 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  discordId String   @unique
+  username  String
+  avatar    String?
+  email     String?
+  isAdmin   Boolean  @default(false)
+  plan      String   @default("free")
+  createdAt DateTime @default(now())
+
+  scripts  Script[]
+  sessions Session[]
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  tokenHash String   @unique
+  userId    String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Script {
+  id             String       @id @default(cuid())
+  ownerId        String
+  name           String
+  description    String
+  game           String
+  scriptContent  String
+  apiKey         String       @unique
+  discordGuildId String?
+  discordRoleId  String?
+  hwidLock       Boolean      @default(true)
+  obfuscate      Boolean      @default(false)
+  accessMode     AccessMode   @default(key)
+  trialDurationAmount Int?
+  trialDurationUnit   DurationUnit?
+  status         ScriptStatus @default(draft)
+  panelTitle     String?
+  panelDescription String?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  owner      User        @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  keys       Key[]
+  whitelist  Whitelist[]
+  executions Execution[]
+  blacklists Blacklist[]
+  hwidBans   HwidBan[]
+}
+
+model Key {
+  id                    String        @id @default(cuid())
+  scriptId              String
+  keyValue              String        @unique
+  durationAmount        Int?
+  durationUnit          DurationUnit?
+  lifetime              Boolean       @default(false)
+  oneTime               Boolean       @default(false)
+  maxHwids              Int           @default(1)
+  redeemed              Boolean       @default(false)
+  redeemedByDiscordId   String?
+  redeemedAt            DateTime?
+  expiresAt             DateTime?
+  note                  String?
+  revoked               Boolean       @default(false)
+  createdAt             DateTime      @default(now())
+
+  script Script @relation(fields: [scriptId], references: [id], onDelete: Cascade)
+}
+
+model Whitelist {
+  id        String   @id @default(cuid())
+  scriptId  String
+  discordId String
+  hwid      String?
+  active    Boolean  @default(true)
+  expiresAt DateTime?
+  createdAt DateTime @default(now())
+
+  script Script @relation(fields: [scriptId], references: [id], onDelete: Cascade)
+
+  @@unique([scriptId, discordId])
+}
+
+model Execution {
+  id         String     @id @default(cuid())
+  scriptId   String
+  discordId  String?
+  hwid       String?
+  deviceType DeviceType @default(unknown)
+  createdAt  DateTime   @default(now())
+
+  script Script @relation(fields: [scriptId], references: [id], onDelete: Cascade)
+}
+
+model GuildSetting {
+  id          String   @id @default(cuid())
+  guildId     String   @unique
+  adminRoleId String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Blacklist {
+  id          String   @id @default(cuid())
+  scriptId    String
+  discordId   String?
+  keyValue    String?
+  reason      String?
+  expiresAt   DateTime?
+  createdById String?
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+
+  script Script @relation(fields: [scriptId], references: [id], onDelete: Cascade)
+
+  @@index([scriptId, discordId])
+  @@index([scriptId, keyValue])
+}
+
+model HwidBan {
+  id          String   @id @default(cuid())
+  scriptId    String
+  hwid        String
+  reason      String?
+  expiresAt   DateTime?
+  createdById String?
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+
+  script Script @relation(fields: [scriptId], references: [id], onDelete: Cascade)
+
+  @@index([scriptId, hwid])
+}
+
+enum ScriptStatus {
+  active
+  paused
+  draft
+}
+
+enum AccessMode {
+  free
+  trial
+  key
+}
+
+enum DurationUnit {
+  minutes
+  hours
+  days
+  weeks
+  months
+}
+
+enum DeviceType {
+  pc
+  mobile
+  unknown
+}

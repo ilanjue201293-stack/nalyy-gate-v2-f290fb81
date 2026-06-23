@@ -16,14 +16,39 @@ import { Route as BotRouteImport } from './routes/bot'
 import { Route as AccessDeniedRouteImport } from './routes/access-denied'
 import { Route as AppRouteImport } from './routes/_app'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ApiVerifyRouteImport } from './routes/api/verify'
+import { Route as ApiRedeemRouteImport } from './routes/api/redeem'
 import { Route as AppWhitelistRouteImport } from './routes/_app.whitelist'
 import { Route as AppStatisticsRouteImport } from './routes/_app.statistics'
 import { Route as AppSettingsRouteImport } from './routes/_app.settings'
 import { Route as AppKeysRouteImport } from './routes/_app.keys'
 import { Route as AppDashboardRouteImport } from './routes/_app.dashboard'
+import { Route as ApiWhitelistIndexRouteImport } from './routes/api/whitelist/index'
+import { Route as ApiScriptsIndexRouteImport } from './routes/api/scripts/index'
+import { Route as ApiKeysIndexRouteImport } from './routes/api/keys/index'
 import { Route as AppScriptsIndexRouteImport } from './routes/_app.scripts.index'
+import { Route as ApiLoaderScriptIdRouteImport } from './routes/api/loader.$scriptId'
+import { Route as ApiWhitelistRemoveRouteImport } from './routes/api/whitelist/remove'
+import { Route as ApiWhitelistAddRouteImport } from './routes/api/whitelist/add'
+import { Route as ApiStatsGlobalRouteImport } from './routes/api/stats/global'
+import { Route as ApiSourceScriptIdRouteImport } from './routes/api/source.$scriptId'
+import { Route as ApiScriptsCreateRouteImport } from './routes/api/scripts/create'
+import { Route as ApiScriptsIdRouteImport } from './routes/api/scripts/$id'
+import { Route as ApiKeysCreateRouteImport } from './routes/api/keys/create'
+import { Route as ApiKeysIdRouteImport } from './routes/api/keys/$id'
+import { Route as ApiHwidResetRouteImport } from './routes/api/hwid/reset'
+import { Route as ApiBillingSelectPlanRouteImport } from './routes/api/billing/select-plan'
+import { Route as ApiAuthMeRouteImport } from './routes/api/auth/me'
+import { Route as ApiAuthDiscordRouteImport } from './routes/api/auth/discord'
+import { Route as ApiAccountProfileRouteImport } from './routes/api/account/profile'
 import { Route as AppScriptsAddRouteImport } from './routes/_app.scripts.add'
 import { Route as AppScriptsIdRouteImport } from './routes/_app.scripts.$id'
+import { Route as ApiStatsUserDiscordIdRouteImport } from './routes/api/stats/user.$discordId'
+import { Route as ApiStatsScriptIdRouteImport } from './routes/api/stats/script.$id'
+import { Route as ApiScriptsIdObfuscatePreviewRouteImport } from './routes/api/scripts/$id.obfuscate-preview'
+import { Route as ApiScriptScriptIdContentRouteImport } from './routes/api/script.$scriptId.content'
+import { Route as ApiKeysIdRevokeRouteImport } from './routes/api/keys/$id.revoke'
+import { Route as ApiAuthDiscordCallbackRouteImport } from './routes/api/auth/discord.callback'
 
 const PricingRoute = PricingRouteImport.update({
   id: '/pricing',
@@ -59,6 +84,16 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiVerifyRoute = ApiVerifyRouteImport.update({
+  id: '/api/verify',
+  path: '/api/verify',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiRedeemRoute = ApiRedeemRouteImport.update({
+  id: '/api/redeem',
+  path: '/api/redeem',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AppWhitelistRoute = AppWhitelistRouteImport.update({
   id: '/whitelist',
   path: '/whitelist',
@@ -84,10 +119,95 @@ const AppDashboardRoute = AppDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AppRoute,
 } as any)
+const ApiWhitelistIndexRoute = ApiWhitelistIndexRouteImport.update({
+  id: '/api/whitelist/',
+  path: '/api/whitelist/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiScriptsIndexRoute = ApiScriptsIndexRouteImport.update({
+  id: '/api/scripts/',
+  path: '/api/scripts/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiKeysIndexRoute = ApiKeysIndexRouteImport.update({
+  id: '/api/keys/',
+  path: '/api/keys/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AppScriptsIndexRoute = AppScriptsIndexRouteImport.update({
   id: '/scripts/',
   path: '/scripts/',
   getParentRoute: () => AppRoute,
+} as any)
+const ApiLoaderScriptIdRoute = ApiLoaderScriptIdRouteImport.update({
+  id: '/api/loader/$scriptId',
+  path: '/api/loader/$scriptId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiWhitelistRemoveRoute = ApiWhitelistRemoveRouteImport.update({
+  id: '/api/whitelist/remove',
+  path: '/api/whitelist/remove',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiWhitelistAddRoute = ApiWhitelistAddRouteImport.update({
+  id: '/api/whitelist/add',
+  path: '/api/whitelist/add',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiStatsGlobalRoute = ApiStatsGlobalRouteImport.update({
+  id: '/api/stats/global',
+  path: '/api/stats/global',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiSourceScriptIdRoute = ApiSourceScriptIdRouteImport.update({
+  id: '/api/source/$scriptId',
+  path: '/api/source/$scriptId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiScriptsCreateRoute = ApiScriptsCreateRouteImport.update({
+  id: '/api/scripts/create',
+  path: '/api/scripts/create',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiScriptsIdRoute = ApiScriptsIdRouteImport.update({
+  id: '/api/scripts/$id',
+  path: '/api/scripts/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiKeysCreateRoute = ApiKeysCreateRouteImport.update({
+  id: '/api/keys/create',
+  path: '/api/keys/create',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiKeysIdRoute = ApiKeysIdRouteImport.update({
+  id: '/api/keys/$id',
+  path: '/api/keys/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiHwidResetRoute = ApiHwidResetRouteImport.update({
+  id: '/api/hwid/reset',
+  path: '/api/hwid/reset',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiBillingSelectPlanRoute = ApiBillingSelectPlanRouteImport.update({
+  id: '/api/billing/select-plan',
+  path: '/api/billing/select-plan',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAuthMeRoute = ApiAuthMeRouteImport.update({
+  id: '/api/auth/me',
+  path: '/api/auth/me',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAuthDiscordRoute = ApiAuthDiscordRouteImport.update({
+  id: '/api/auth/discord',
+  path: '/api/auth/discord',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAccountProfileRoute = ApiAccountProfileRouteImport.update({
+  id: '/api/account/profile',
+  path: '/api/account/profile',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AppScriptsAddRoute = AppScriptsAddRouteImport.update({
   id: '/scripts/add',
@@ -98,6 +218,38 @@ const AppScriptsIdRoute = AppScriptsIdRouteImport.update({
   id: '/scripts/$id',
   path: '/scripts/$id',
   getParentRoute: () => AppRoute,
+} as any)
+const ApiStatsUserDiscordIdRoute = ApiStatsUserDiscordIdRouteImport.update({
+  id: '/api/stats/user/$discordId',
+  path: '/api/stats/user/$discordId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiStatsScriptIdRoute = ApiStatsScriptIdRouteImport.update({
+  id: '/api/stats/script/$id',
+  path: '/api/stats/script/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiScriptsIdObfuscatePreviewRoute =
+  ApiScriptsIdObfuscatePreviewRouteImport.update({
+    id: '/obfuscate-preview',
+    path: '/obfuscate-preview',
+    getParentRoute: () => ApiScriptsIdRoute,
+  } as any)
+const ApiScriptScriptIdContentRoute =
+  ApiScriptScriptIdContentRouteImport.update({
+    id: '/api/script/$scriptId/content',
+    path: '/api/script/$scriptId/content',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiKeysIdRevokeRoute = ApiKeysIdRevokeRouteImport.update({
+  id: '/revoke',
+  path: '/revoke',
+  getParentRoute: () => ApiKeysIdRoute,
+} as any)
+const ApiAuthDiscordCallbackRoute = ApiAuthDiscordCallbackRouteImport.update({
+  id: '/callback',
+  path: '/callback',
+  getParentRoute: () => ApiAuthDiscordRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
@@ -112,9 +264,34 @@ export interface FileRoutesByFullPath {
   '/settings': typeof AppSettingsRoute
   '/statistics': typeof AppStatisticsRoute
   '/whitelist': typeof AppWhitelistRoute
+  '/api/redeem': typeof ApiRedeemRoute
+  '/api/verify': typeof ApiVerifyRoute
   '/scripts/$id': typeof AppScriptsIdRoute
   '/scripts/add': typeof AppScriptsAddRoute
+  '/api/account/profile': typeof ApiAccountProfileRoute
+  '/api/auth/discord': typeof ApiAuthDiscordRouteWithChildren
+  '/api/auth/me': typeof ApiAuthMeRoute
+  '/api/billing/select-plan': typeof ApiBillingSelectPlanRoute
+  '/api/hwid/reset': typeof ApiHwidResetRoute
+  '/api/keys/$id': typeof ApiKeysIdRouteWithChildren
+  '/api/keys/create': typeof ApiKeysCreateRoute
+  '/api/scripts/$id': typeof ApiScriptsIdRouteWithChildren
+  '/api/scripts/create': typeof ApiScriptsCreateRoute
+  '/api/source/$scriptId': typeof ApiSourceScriptIdRoute
+  '/api/stats/global': typeof ApiStatsGlobalRoute
+  '/api/whitelist/add': typeof ApiWhitelistAddRoute
+  '/api/whitelist/remove': typeof ApiWhitelistRemoveRoute
+  '/api/loader/$scriptId': typeof ApiLoaderScriptIdRoute
   '/scripts/': typeof AppScriptsIndexRoute
+  '/api/keys/': typeof ApiKeysIndexRoute
+  '/api/scripts/': typeof ApiScriptsIndexRoute
+  '/api/whitelist/': typeof ApiWhitelistIndexRoute
+  '/api/auth/discord/callback': typeof ApiAuthDiscordCallbackRoute
+  '/api/keys/$id/revoke': typeof ApiKeysIdRevokeRoute
+  '/api/script/$scriptId/content': typeof ApiScriptScriptIdContentRoute
+  '/api/scripts/$id/obfuscate-preview': typeof ApiScriptsIdObfuscatePreviewRoute
+  '/api/stats/script/$id': typeof ApiStatsScriptIdRoute
+  '/api/stats/user/$discordId': typeof ApiStatsUserDiscordIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -128,9 +305,34 @@ export interface FileRoutesByTo {
   '/settings': typeof AppSettingsRoute
   '/statistics': typeof AppStatisticsRoute
   '/whitelist': typeof AppWhitelistRoute
+  '/api/redeem': typeof ApiRedeemRoute
+  '/api/verify': typeof ApiVerifyRoute
   '/scripts/$id': typeof AppScriptsIdRoute
   '/scripts/add': typeof AppScriptsAddRoute
+  '/api/account/profile': typeof ApiAccountProfileRoute
+  '/api/auth/discord': typeof ApiAuthDiscordRouteWithChildren
+  '/api/auth/me': typeof ApiAuthMeRoute
+  '/api/billing/select-plan': typeof ApiBillingSelectPlanRoute
+  '/api/hwid/reset': typeof ApiHwidResetRoute
+  '/api/keys/$id': typeof ApiKeysIdRouteWithChildren
+  '/api/keys/create': typeof ApiKeysCreateRoute
+  '/api/scripts/$id': typeof ApiScriptsIdRouteWithChildren
+  '/api/scripts/create': typeof ApiScriptsCreateRoute
+  '/api/source/$scriptId': typeof ApiSourceScriptIdRoute
+  '/api/stats/global': typeof ApiStatsGlobalRoute
+  '/api/whitelist/add': typeof ApiWhitelistAddRoute
+  '/api/whitelist/remove': typeof ApiWhitelistRemoveRoute
+  '/api/loader/$scriptId': typeof ApiLoaderScriptIdRoute
   '/scripts': typeof AppScriptsIndexRoute
+  '/api/keys': typeof ApiKeysIndexRoute
+  '/api/scripts': typeof ApiScriptsIndexRoute
+  '/api/whitelist': typeof ApiWhitelistIndexRoute
+  '/api/auth/discord/callback': typeof ApiAuthDiscordCallbackRoute
+  '/api/keys/$id/revoke': typeof ApiKeysIdRevokeRoute
+  '/api/script/$scriptId/content': typeof ApiScriptScriptIdContentRoute
+  '/api/scripts/$id/obfuscate-preview': typeof ApiScriptsIdObfuscatePreviewRoute
+  '/api/stats/script/$id': typeof ApiStatsScriptIdRoute
+  '/api/stats/user/$discordId': typeof ApiStatsUserDiscordIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -146,9 +348,34 @@ export interface FileRoutesById {
   '/_app/settings': typeof AppSettingsRoute
   '/_app/statistics': typeof AppStatisticsRoute
   '/_app/whitelist': typeof AppWhitelistRoute
+  '/api/redeem': typeof ApiRedeemRoute
+  '/api/verify': typeof ApiVerifyRoute
   '/_app/scripts/$id': typeof AppScriptsIdRoute
   '/_app/scripts/add': typeof AppScriptsAddRoute
+  '/api/account/profile': typeof ApiAccountProfileRoute
+  '/api/auth/discord': typeof ApiAuthDiscordRouteWithChildren
+  '/api/auth/me': typeof ApiAuthMeRoute
+  '/api/billing/select-plan': typeof ApiBillingSelectPlanRoute
+  '/api/hwid/reset': typeof ApiHwidResetRoute
+  '/api/keys/$id': typeof ApiKeysIdRouteWithChildren
+  '/api/keys/create': typeof ApiKeysCreateRoute
+  '/api/scripts/$id': typeof ApiScriptsIdRouteWithChildren
+  '/api/scripts/create': typeof ApiScriptsCreateRoute
+  '/api/source/$scriptId': typeof ApiSourceScriptIdRoute
+  '/api/stats/global': typeof ApiStatsGlobalRoute
+  '/api/whitelist/add': typeof ApiWhitelistAddRoute
+  '/api/whitelist/remove': typeof ApiWhitelistRemoveRoute
+  '/api/loader/$scriptId': typeof ApiLoaderScriptIdRoute
   '/_app/scripts/': typeof AppScriptsIndexRoute
+  '/api/keys/': typeof ApiKeysIndexRoute
+  '/api/scripts/': typeof ApiScriptsIndexRoute
+  '/api/whitelist/': typeof ApiWhitelistIndexRoute
+  '/api/auth/discord/callback': typeof ApiAuthDiscordCallbackRoute
+  '/api/keys/$id/revoke': typeof ApiKeysIdRevokeRoute
+  '/api/script/$scriptId/content': typeof ApiScriptScriptIdContentRoute
+  '/api/scripts/$id/obfuscate-preview': typeof ApiScriptsIdObfuscatePreviewRoute
+  '/api/stats/script/$id': typeof ApiStatsScriptIdRoute
+  '/api/stats/user/$discordId': typeof ApiStatsUserDiscordIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -164,9 +391,34 @@ export interface FileRouteTypes {
     | '/settings'
     | '/statistics'
     | '/whitelist'
+    | '/api/redeem'
+    | '/api/verify'
     | '/scripts/$id'
     | '/scripts/add'
+    | '/api/account/profile'
+    | '/api/auth/discord'
+    | '/api/auth/me'
+    | '/api/billing/select-plan'
+    | '/api/hwid/reset'
+    | '/api/keys/$id'
+    | '/api/keys/create'
+    | '/api/scripts/$id'
+    | '/api/scripts/create'
+    | '/api/source/$scriptId'
+    | '/api/stats/global'
+    | '/api/whitelist/add'
+    | '/api/whitelist/remove'
+    | '/api/loader/$scriptId'
     | '/scripts/'
+    | '/api/keys/'
+    | '/api/scripts/'
+    | '/api/whitelist/'
+    | '/api/auth/discord/callback'
+    | '/api/keys/$id/revoke'
+    | '/api/script/$scriptId/content'
+    | '/api/scripts/$id/obfuscate-preview'
+    | '/api/stats/script/$id'
+    | '/api/stats/user/$discordId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -180,9 +432,34 @@ export interface FileRouteTypes {
     | '/settings'
     | '/statistics'
     | '/whitelist'
+    | '/api/redeem'
+    | '/api/verify'
     | '/scripts/$id'
     | '/scripts/add'
+    | '/api/account/profile'
+    | '/api/auth/discord'
+    | '/api/auth/me'
+    | '/api/billing/select-plan'
+    | '/api/hwid/reset'
+    | '/api/keys/$id'
+    | '/api/keys/create'
+    | '/api/scripts/$id'
+    | '/api/scripts/create'
+    | '/api/source/$scriptId'
+    | '/api/stats/global'
+    | '/api/whitelist/add'
+    | '/api/whitelist/remove'
+    | '/api/loader/$scriptId'
     | '/scripts'
+    | '/api/keys'
+    | '/api/scripts'
+    | '/api/whitelist'
+    | '/api/auth/discord/callback'
+    | '/api/keys/$id/revoke'
+    | '/api/script/$scriptId/content'
+    | '/api/scripts/$id/obfuscate-preview'
+    | '/api/stats/script/$id'
+    | '/api/stats/user/$discordId'
   id:
     | '__root__'
     | '/'
@@ -197,9 +474,34 @@ export interface FileRouteTypes {
     | '/_app/settings'
     | '/_app/statistics'
     | '/_app/whitelist'
+    | '/api/redeem'
+    | '/api/verify'
     | '/_app/scripts/$id'
     | '/_app/scripts/add'
+    | '/api/account/profile'
+    | '/api/auth/discord'
+    | '/api/auth/me'
+    | '/api/billing/select-plan'
+    | '/api/hwid/reset'
+    | '/api/keys/$id'
+    | '/api/keys/create'
+    | '/api/scripts/$id'
+    | '/api/scripts/create'
+    | '/api/source/$scriptId'
+    | '/api/stats/global'
+    | '/api/whitelist/add'
+    | '/api/whitelist/remove'
+    | '/api/loader/$scriptId'
     | '/_app/scripts/'
+    | '/api/keys/'
+    | '/api/scripts/'
+    | '/api/whitelist/'
+    | '/api/auth/discord/callback'
+    | '/api/keys/$id/revoke'
+    | '/api/script/$scriptId/content'
+    | '/api/scripts/$id/obfuscate-preview'
+    | '/api/stats/script/$id'
+    | '/api/stats/user/$discordId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -210,6 +512,28 @@ export interface RootRouteChildren {
   HowItWorksRoute: typeof HowItWorksRoute
   LoginRoute: typeof LoginRoute
   PricingRoute: typeof PricingRoute
+  ApiRedeemRoute: typeof ApiRedeemRoute
+  ApiVerifyRoute: typeof ApiVerifyRoute
+  ApiAccountProfileRoute: typeof ApiAccountProfileRoute
+  ApiAuthDiscordRoute: typeof ApiAuthDiscordRouteWithChildren
+  ApiAuthMeRoute: typeof ApiAuthMeRoute
+  ApiBillingSelectPlanRoute: typeof ApiBillingSelectPlanRoute
+  ApiHwidResetRoute: typeof ApiHwidResetRoute
+  ApiKeysIdRoute: typeof ApiKeysIdRouteWithChildren
+  ApiKeysCreateRoute: typeof ApiKeysCreateRoute
+  ApiScriptsIdRoute: typeof ApiScriptsIdRouteWithChildren
+  ApiScriptsCreateRoute: typeof ApiScriptsCreateRoute
+  ApiSourceScriptIdRoute: typeof ApiSourceScriptIdRoute
+  ApiStatsGlobalRoute: typeof ApiStatsGlobalRoute
+  ApiWhitelistAddRoute: typeof ApiWhitelistAddRoute
+  ApiWhitelistRemoveRoute: typeof ApiWhitelistRemoveRoute
+  ApiLoaderScriptIdRoute: typeof ApiLoaderScriptIdRoute
+  ApiKeysIndexRoute: typeof ApiKeysIndexRoute
+  ApiScriptsIndexRoute: typeof ApiScriptsIndexRoute
+  ApiWhitelistIndexRoute: typeof ApiWhitelistIndexRoute
+  ApiScriptScriptIdContentRoute: typeof ApiScriptScriptIdContentRoute
+  ApiStatsScriptIdRoute: typeof ApiStatsScriptIdRoute
+  ApiStatsUserDiscordIdRoute: typeof ApiStatsUserDiscordIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -263,6 +587,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/verify': {
+      id: '/api/verify'
+      path: '/api/verify'
+      fullPath: '/api/verify'
+      preLoaderRoute: typeof ApiVerifyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/redeem': {
+      id: '/api/redeem'
+      path: '/api/redeem'
+      fullPath: '/api/redeem'
+      preLoaderRoute: typeof ApiRedeemRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_app/whitelist': {
       id: '/_app/whitelist'
       path: '/whitelist'
@@ -298,12 +636,131 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppDashboardRouteImport
       parentRoute: typeof AppRoute
     }
+    '/api/whitelist/': {
+      id: '/api/whitelist/'
+      path: '/api/whitelist'
+      fullPath: '/api/whitelist/'
+      preLoaderRoute: typeof ApiWhitelistIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/scripts/': {
+      id: '/api/scripts/'
+      path: '/api/scripts'
+      fullPath: '/api/scripts/'
+      preLoaderRoute: typeof ApiScriptsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/keys/': {
+      id: '/api/keys/'
+      path: '/api/keys'
+      fullPath: '/api/keys/'
+      preLoaderRoute: typeof ApiKeysIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_app/scripts/': {
       id: '/_app/scripts/'
       path: '/scripts'
       fullPath: '/scripts/'
       preLoaderRoute: typeof AppScriptsIndexRouteImport
       parentRoute: typeof AppRoute
+    }
+    '/api/loader/$scriptId': {
+      id: '/api/loader/$scriptId'
+      path: '/api/loader/$scriptId'
+      fullPath: '/api/loader/$scriptId'
+      preLoaderRoute: typeof ApiLoaderScriptIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/whitelist/remove': {
+      id: '/api/whitelist/remove'
+      path: '/api/whitelist/remove'
+      fullPath: '/api/whitelist/remove'
+      preLoaderRoute: typeof ApiWhitelistRemoveRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/whitelist/add': {
+      id: '/api/whitelist/add'
+      path: '/api/whitelist/add'
+      fullPath: '/api/whitelist/add'
+      preLoaderRoute: typeof ApiWhitelistAddRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/stats/global': {
+      id: '/api/stats/global'
+      path: '/api/stats/global'
+      fullPath: '/api/stats/global'
+      preLoaderRoute: typeof ApiStatsGlobalRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/source/$scriptId': {
+      id: '/api/source/$scriptId'
+      path: '/api/source/$scriptId'
+      fullPath: '/api/source/$scriptId'
+      preLoaderRoute: typeof ApiSourceScriptIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/scripts/create': {
+      id: '/api/scripts/create'
+      path: '/api/scripts/create'
+      fullPath: '/api/scripts/create'
+      preLoaderRoute: typeof ApiScriptsCreateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/scripts/$id': {
+      id: '/api/scripts/$id'
+      path: '/api/scripts/$id'
+      fullPath: '/api/scripts/$id'
+      preLoaderRoute: typeof ApiScriptsIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/keys/create': {
+      id: '/api/keys/create'
+      path: '/api/keys/create'
+      fullPath: '/api/keys/create'
+      preLoaderRoute: typeof ApiKeysCreateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/keys/$id': {
+      id: '/api/keys/$id'
+      path: '/api/keys/$id'
+      fullPath: '/api/keys/$id'
+      preLoaderRoute: typeof ApiKeysIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/hwid/reset': {
+      id: '/api/hwid/reset'
+      path: '/api/hwid/reset'
+      fullPath: '/api/hwid/reset'
+      preLoaderRoute: typeof ApiHwidResetRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/billing/select-plan': {
+      id: '/api/billing/select-plan'
+      path: '/api/billing/select-plan'
+      fullPath: '/api/billing/select-plan'
+      preLoaderRoute: typeof ApiBillingSelectPlanRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/auth/me': {
+      id: '/api/auth/me'
+      path: '/api/auth/me'
+      fullPath: '/api/auth/me'
+      preLoaderRoute: typeof ApiAuthMeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/auth/discord': {
+      id: '/api/auth/discord'
+      path: '/api/auth/discord'
+      fullPath: '/api/auth/discord'
+      preLoaderRoute: typeof ApiAuthDiscordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/account/profile': {
+      id: '/api/account/profile'
+      path: '/api/account/profile'
+      fullPath: '/api/account/profile'
+      preLoaderRoute: typeof ApiAccountProfileRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/_app/scripts/add': {
       id: '/_app/scripts/add'
@@ -318,6 +775,48 @@ declare module '@tanstack/react-router' {
       fullPath: '/scripts/$id'
       preLoaderRoute: typeof AppScriptsIdRouteImport
       parentRoute: typeof AppRoute
+    }
+    '/api/stats/user/$discordId': {
+      id: '/api/stats/user/$discordId'
+      path: '/api/stats/user/$discordId'
+      fullPath: '/api/stats/user/$discordId'
+      preLoaderRoute: typeof ApiStatsUserDiscordIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/stats/script/$id': {
+      id: '/api/stats/script/$id'
+      path: '/api/stats/script/$id'
+      fullPath: '/api/stats/script/$id'
+      preLoaderRoute: typeof ApiStatsScriptIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/scripts/$id/obfuscate-preview': {
+      id: '/api/scripts/$id/obfuscate-preview'
+      path: '/obfuscate-preview'
+      fullPath: '/api/scripts/$id/obfuscate-preview'
+      preLoaderRoute: typeof ApiScriptsIdObfuscatePreviewRouteImport
+      parentRoute: typeof ApiScriptsIdRoute
+    }
+    '/api/script/$scriptId/content': {
+      id: '/api/script/$scriptId/content'
+      path: '/api/script/$scriptId/content'
+      fullPath: '/api/script/$scriptId/content'
+      preLoaderRoute: typeof ApiScriptScriptIdContentRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/keys/$id/revoke': {
+      id: '/api/keys/$id/revoke'
+      path: '/revoke'
+      fullPath: '/api/keys/$id/revoke'
+      preLoaderRoute: typeof ApiKeysIdRevokeRouteImport
+      parentRoute: typeof ApiKeysIdRoute
+    }
+    '/api/auth/discord/callback': {
+      id: '/api/auth/discord/callback'
+      path: '/callback'
+      fullPath: '/api/auth/discord/callback'
+      preLoaderRoute: typeof ApiAuthDiscordCallbackRouteImport
+      parentRoute: typeof ApiAuthDiscordRoute
     }
   }
 }
@@ -346,6 +845,42 @@ const AppRouteChildren: AppRouteChildren = {
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 
+interface ApiAuthDiscordRouteChildren {
+  ApiAuthDiscordCallbackRoute: typeof ApiAuthDiscordCallbackRoute
+}
+
+const ApiAuthDiscordRouteChildren: ApiAuthDiscordRouteChildren = {
+  ApiAuthDiscordCallbackRoute: ApiAuthDiscordCallbackRoute,
+}
+
+const ApiAuthDiscordRouteWithChildren = ApiAuthDiscordRoute._addFileChildren(
+  ApiAuthDiscordRouteChildren,
+)
+
+interface ApiKeysIdRouteChildren {
+  ApiKeysIdRevokeRoute: typeof ApiKeysIdRevokeRoute
+}
+
+const ApiKeysIdRouteChildren: ApiKeysIdRouteChildren = {
+  ApiKeysIdRevokeRoute: ApiKeysIdRevokeRoute,
+}
+
+const ApiKeysIdRouteWithChildren = ApiKeysIdRoute._addFileChildren(
+  ApiKeysIdRouteChildren,
+)
+
+interface ApiScriptsIdRouteChildren {
+  ApiScriptsIdObfuscatePreviewRoute: typeof ApiScriptsIdObfuscatePreviewRoute
+}
+
+const ApiScriptsIdRouteChildren: ApiScriptsIdRouteChildren = {
+  ApiScriptsIdObfuscatePreviewRoute: ApiScriptsIdObfuscatePreviewRoute,
+}
+
+const ApiScriptsIdRouteWithChildren = ApiScriptsIdRoute._addFileChildren(
+  ApiScriptsIdRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AppRoute: AppRouteWithChildren,
@@ -354,7 +889,39 @@ const rootRouteChildren: RootRouteChildren = {
   HowItWorksRoute: HowItWorksRoute,
   LoginRoute: LoginRoute,
   PricingRoute: PricingRoute,
+  ApiRedeemRoute: ApiRedeemRoute,
+  ApiVerifyRoute: ApiVerifyRoute,
+  ApiAccountProfileRoute: ApiAccountProfileRoute,
+  ApiAuthDiscordRoute: ApiAuthDiscordRouteWithChildren,
+  ApiAuthMeRoute: ApiAuthMeRoute,
+  ApiBillingSelectPlanRoute: ApiBillingSelectPlanRoute,
+  ApiHwidResetRoute: ApiHwidResetRoute,
+  ApiKeysIdRoute: ApiKeysIdRouteWithChildren,
+  ApiKeysCreateRoute: ApiKeysCreateRoute,
+  ApiScriptsIdRoute: ApiScriptsIdRouteWithChildren,
+  ApiScriptsCreateRoute: ApiScriptsCreateRoute,
+  ApiSourceScriptIdRoute: ApiSourceScriptIdRoute,
+  ApiStatsGlobalRoute: ApiStatsGlobalRoute,
+  ApiWhitelistAddRoute: ApiWhitelistAddRoute,
+  ApiWhitelistRemoveRoute: ApiWhitelistRemoveRoute,
+  ApiLoaderScriptIdRoute: ApiLoaderScriptIdRoute,
+  ApiKeysIndexRoute: ApiKeysIndexRoute,
+  ApiScriptsIndexRoute: ApiScriptsIndexRoute,
+  ApiWhitelistIndexRoute: ApiWhitelistIndexRoute,
+  ApiScriptScriptIdContentRoute: ApiScriptScriptIdContentRoute,
+  ApiStatsScriptIdRoute: ApiStatsScriptIdRoute,
+  ApiStatsUserDiscordIdRoute: ApiStatsUserDiscordIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}

@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
 import {
   FileCode2,
   KeyRound,
@@ -26,6 +27,7 @@ import {
   totals,
   executionsByDay,
 } from "@/lib/mock-data";
+import { apiClient } from "@/lib/api-client";
 
 export const Route = createFileRoute("/_app/dashboard")({
   head: () => ({ meta: [{ title: "Dashboard — Nalyy Gate" }] }),
@@ -33,6 +35,14 @@ export const Route = createFileRoute("/_app/dashboard")({
 });
 
 function Dashboard() {
+  const statsQuery = useQuery({ queryKey: ["stats", "global"], queryFn: apiClient.globalStats });
+  const scriptsQuery = useQuery({ queryKey: ["scripts"], queryFn: apiClient.scripts });
+  const keysQuery = useQuery({ queryKey: ["keys"], queryFn: apiClient.keys });
+  const liveTotals = statsQuery.data?.totals ?? totals;
+  const liveExecutions = statsQuery.data?.executionsByDay ?? executionsByDay;
+  const liveScripts = scriptsQuery.data ?? scripts;
+  const liveKeys = keysQuery.data ?? keys;
+
   return (
     <div className="space-y-8">
       <PageHeader
@@ -50,29 +60,29 @@ function Dashboard() {
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard
           label="Total Scripts"
-          value={totals.scripts}
-          hint={`${totals.activeScripts} active`}
+          value={liveTotals.scripts}
+          hint={`${liveTotals.activeScripts} active`}
           icon={FileCode2}
           accent="primary"
         />
         <StatCard
           label="Active Keys"
-          value={totals.activeKeys}
-          hint={`${totals.keys} generated`}
+          value={liveTotals.activeKeys}
+          hint={`${liveTotals.keys} generated`}
           icon={KeyRound}
           accent="accent"
         />
         <StatCard
           label="Whitelisted"
-          value={totals.whitelistUsers}
-          hint={`${totals.onlineUsers} online now`}
+          value={liveTotals.whitelistUsers}
+          hint={`${liveTotals.onlineUsers} active`}
           icon={Users}
           accent="success"
         />
         <StatCard
           label="Executions (7d)"
-          value={totals.executions.toLocaleString()}
-          hint="+12.4% vs last week"
+          value={liveTotals.executions.toLocaleString()}
+          hint="Verified requests"
           icon={Activity}
           accent="warning"
         />
@@ -91,7 +101,7 @@ function Dashboard() {
           </div>
           <div className="mt-6 h-64">
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={executionsByDay}>
+              <AreaChart data={liveExecutions}>
                 <defs>
                   <linearGradient id="gradExec" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="0%" stopColor="oklch(0.62 0.26 295)" stopOpacity={0.6} />
@@ -128,7 +138,7 @@ function Dashboard() {
             </Link>
           </div>
           <ul className="mt-4 space-y-3">
-            {keys.slice(0, 5).map((k) => (
+            {liveKeys.slice(0, 5).map((k) => (
               <li
                 key={k.id}
                 className="flex items-center justify-between gap-3 rounded-xl border border-border/50 bg-background/40 p-3"
@@ -165,7 +175,7 @@ function Dashboard() {
               </tr>
             </thead>
             <tbody className="divide-y divide-border/40">
-              {scripts.slice(0, 4).map((s) => (
+              {liveScripts.slice(0, 4).map((s) => (
                 <tr key={s.id} className="text-foreground/90">
                   <td className="py-3">
                     <Link

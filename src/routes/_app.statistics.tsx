@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Activity, KeyRound, Users, FileCode2 } from "lucide-react";
 import {
   AreaChart,
@@ -17,6 +18,7 @@ import { PageHeader, StatCard } from "@/components/page-header";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { totals, executionsByDay } from "@/lib/mock-data";
+import { apiClient } from "@/lib/api-client";
 
 export const Route = createFileRoute("/_app/statistics")({
   head: () => ({ meta: [{ title: "Statistics — Nalyy Gate" }] }),
@@ -35,106 +37,12 @@ type UserRow = {
   weekly: { day: string; execs: number }[];
 };
 
-const topUsers: UserRow[] = [
-  {
-    tag: "ghost#0001",
-    discordId: "928374651029384756",
-    executions: 12480,
-    scriptsUsed: 3,
-    lastActive: "2 min ago",
-    joined: "2026-01-12",
-    hwids: 1,
-    topScript: "Aurora Hub",
-    weekly: [
-      { day: "Mon", execs: 1820 },
-      { day: "Tue", execs: 2410 },
-      { day: "Wed", execs: 1920 },
-      { day: "Thu", execs: 2110 },
-      { day: "Fri", execs: 1320 },
-      { day: "Sat", execs: 1480 },
-      { day: "Sun", execs: 1420 },
-    ],
-  },
-  {
-    tag: "neo#4521",
-    discordId: "771029384756102938",
-    executions: 9120,
-    scriptsUsed: 2,
-    lastActive: "1 h ago",
-    joined: "2026-02-08",
-    hwids: 2,
-    topScript: "Aurora Hub",
-    weekly: [
-      { day: "Mon", execs: 1100 },
-      { day: "Tue", execs: 1480 },
-      { day: "Wed", execs: 1320 },
-      { day: "Thu", execs: 1610 },
-      { day: "Fri", execs: 1240 },
-      { day: "Sat", execs: 1200 },
-      { day: "Sun", execs: 1170 },
-    ],
-  },
-  {
-    tag: "lunar#2210",
-    discordId: "550918273645501827",
-    executions: 7420,
-    scriptsUsed: 2,
-    lastActive: "5 min ago",
-    joined: "2026-02-14",
-    hwids: 1,
-    topScript: "Pet Simulator X",
-    weekly: [
-      { day: "Mon", execs: 980 },
-      { day: "Tue", execs: 1120 },
-      { day: "Wed", execs: 1010 },
-      { day: "Thu", execs: 1190 },
-      { day: "Fri", execs: 1100 },
-      { day: "Sat", execs: 1020 },
-      { day: "Sun", execs: 1000 },
-    ],
-  },
-  {
-    tag: "zen#7700",
-    discordId: "440918273645501827",
-    executions: 4810,
-    scriptsUsed: 1,
-    lastActive: "online",
-    joined: "2026-06-22",
-    hwids: 1,
-    topScript: "Aurora Hub",
-    weekly: [
-      { day: "Mon", execs: 600 },
-      { day: "Tue", execs: 720 },
-      { day: "Wed", execs: 680 },
-      { day: "Thu", execs: 710 },
-      { day: "Fri", execs: 700 },
-      { day: "Sat", execs: 720 },
-      { day: "Sun", execs: 680 },
-    ],
-  },
-  {
-    tag: "vortex#1100",
-    discordId: "330918273645501822",
-    executions: 3210,
-    scriptsUsed: 1,
-    lastActive: "10 min ago",
-    joined: "2026-05-01",
-    hwids: 1,
-    topScript: "Blade Ball Pro",
-    weekly: [
-      { day: "Mon", execs: 410 },
-      { day: "Tue", execs: 500 },
-      { day: "Wed", execs: 430 },
-      { day: "Thu", execs: 480 },
-      { day: "Fri", execs: 470 },
-      { day: "Sat", execs: 460 },
-      { day: "Sun", execs: 460 },
-    ],
-  },
-];
-
 function Statistics() {
   const [selected, setSelected] = useState<UserRow | null>(null);
+  const statsQuery = useQuery({ queryKey: ["stats", "global"], queryFn: apiClient.globalStats });
+  const liveTotals = statsQuery.data?.totals ?? totals;
+  const liveExecutions = statsQuery.data?.executionsByDay ?? executionsByDay;
+  const topUsers = statsQuery.data?.topUsers ?? [];
 
   const tooltipStyle = {
     background: "oklch(0.17 0.03 280)",
@@ -150,15 +58,22 @@ function Statistics() {
       />
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <StatCard label="Scripts" value={totals.scripts} icon={FileCode2} accent="primary" />
-        <StatCard label="Active keys" value={totals.activeKeys} icon={KeyRound} accent="accent" />
-        <StatCard label="Whitelist" value={totals.whitelistUsers} icon={Users} accent="success" />
-        <StatCard label="Executions" value={totals.executions.toLocaleString()} icon={Activity} accent="warning" />
+        <StatCard label="Scripts" value={liveTotals.scripts} icon={FileCode2} accent="primary" />
+        <StatCard label="Active keys" value={liveTotals.activeKeys} icon={KeyRound} accent="accent" />
+        <StatCard label="Whitelist" value={liveTotals.whitelistUsers} icon={Users} accent="success" />
+        <StatCard label="Executions" value={liveTotals.executions.toLocaleString()} icon={Activity} accent="warning" />
+      </div>
+
+      <div className="grid gap-4 sm:grid-cols-4">
+        <MiniStat label="Free scripts" value={statsQuery.data?.accessModes?.free ?? 0} />
+        <MiniStat label="Trial scripts" value={statsQuery.data?.accessModes?.trial ?? 0} />
+        <MiniStat label="Key scripts" value={statsQuery.data?.accessModes?.key ?? 0} />
+        <MiniStat label="Active trials" value={statsQuery.data?.accessModes?.activeTrials ?? 0} />
       </div>
 
       <Panel title="Executions over time" subtitle="Last 7 days">
         <ResponsiveContainer width="100%" height={280}>
-          <AreaChart data={executionsByDay}>
+          <AreaChart data={liveExecutions}>
             <defs>
               <linearGradient id="g1" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0%" stopColor="oklch(0.7 0.2 265)" stopOpacity={0.6} />
@@ -186,7 +101,13 @@ function Statistics() {
               </tr>
             </thead>
             <tbody className="divide-y divide-border/40">
-              {topUsers.map((u) => (
+              {topUsers.length === 0 ? (
+                <tr>
+                  <td colSpan={4} className="py-8 text-center text-muted-foreground">
+                    No user executions yet.
+                  </td>
+                </tr>
+              ) : topUsers.map((u) => (
                 <tr
                   key={u.tag}
                   onClick={() => setSelected(u)}

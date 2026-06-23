@@ -1,4 +1,4 @@
-import { createFileRoute, Outlet } from "@tanstack/react-router";
+import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 import { Bell, Search } from "lucide-react";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
@@ -6,6 +6,13 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/_app")({
+  beforeLoad: async () => {
+    if (typeof window === "undefined") return;
+    const response = await fetch("/api/auth/me");
+    if (!response.ok) {
+      throw redirect({ to: "/login" });
+    }
+  },
   component: AppLayout,
 });
 

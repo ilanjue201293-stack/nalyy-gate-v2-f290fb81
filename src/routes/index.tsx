@@ -6,10 +6,10 @@ import {
   BarChart3,
   Cpu,
   Lock,
-  ArrowRight,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/logo";
+import { PublicAuthButton } from "@/components/public-auth-button";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -75,12 +75,8 @@ function Landing() {
             <Link to="/bot" className="hover:text-foreground">Get Bot</Link>
           </nav>
           <div className="flex items-center gap-2">
-            <Button asChild variant="ghost" size="sm" className="hidden sm:inline-flex">
-              <Link to="/login">Login</Link>
-            </Button>
-            <Button asChild variant="hero" size="sm">
-              <Link to="/dashboard">Dashboard</Link>
-            </Button>
+            <PublicAuthButton variant="ghost" size="sm" loginLabel="Login" className="hidden sm:inline-flex" />
+            <PublicAuthButton variant="hero" size="sm" loginLabel="Get Started" />
           </div>
         </div>
       </header>
@@ -105,26 +101,8 @@ function Landing() {
               futuristic dashboard built for serious developers.
             </p>
             <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
-              <Button asChild variant="hero" size="lg">
-                <Link to="/login">
-                  Login with Discord <ArrowRight className="h-4 w-4" />
-                </Link>
-              </Button>
-              <Button asChild variant="neon" size="lg">
-                <Link to="/dashboard">Open Dashboard</Link>
-              </Button>
-            </div>
-            <div className="mt-12 grid grid-cols-3 gap-4 text-center">
-              {[
-                ["12.4K", "Active scripts"],
-                ["1.8M", "Keys generated"],
-                ["98ms", "Avg. loader time"],
-              ].map(([v, l]) => (
-                <div key={l} className="rounded-xl border border-border bg-card/40 p-4 backdrop-blur">
-                  <div className="font-display text-2xl font-bold text-gradient sm:text-3xl">{v}</div>
-                  <div className="mt-1 text-xs text-muted-foreground">{l}</div>
-                </div>
-              ))}
+              <PublicAuthButton variant="hero" size="lg" loginLabel="Login with Discord" />
+              <PublicAuthButton variant="neon" size="lg" loginLabel="Open Dashboard" dashboardLabel="Open Dashboard" />
             </div>
           </div>
         </div>
@@ -169,14 +147,12 @@ function Landing() {
               Ready to ship your next script?
             </h2>
             <p className="mx-auto mt-3 max-w-xl text-muted-foreground">
-              Free during beta. No credit card. Connect your Discord and you're live in 60 seconds.
+              Connect Discord, create your scripts, then manage keys, whitelist and panels from one place.
             </p>
             <div className="mt-7 flex flex-wrap justify-center gap-3">
-              <Button asChild variant="hero" size="lg">
-                <Link to="/login">Get Started</Link>
-              </Button>
+              <PublicAuthButton variant="hero" size="lg" loginLabel="Get Started" />
               <Button asChild variant="outline" size="lg">
-                <Link to="/dashboard">View Demo Dashboard</Link>
+                <Link to="/bot">Invite Bot</Link>
               </Button>
             </div>
           </div>

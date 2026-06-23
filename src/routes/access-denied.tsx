@@ -55,7 +55,7 @@ function AccessDenied() {
             <Link to="/login">Sign in with Discord</Link>
           </Button>
           <Button asChild variant="outline" size="lg">
-            <Link to="/pricing">Get a key</Link>
+            <Link to="/dashboard">Dashboard</Link>
           </Button>
         </div>
 

@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { UserPlus, Trash2, ShieldCheck, Search } from "lucide-react";
 import { PageHeader } from "@/components/page-header";
@@ -18,6 +19,7 @@ import {
 } from "@/components/ui/dialog";
 import { scripts, whitelist } from "@/lib/mock-data";
 import { toast } from "sonner";
+import { apiClient } from "@/lib/api-client";
 
 export const Route = createFileRoute("/_app/whitelist")({
   head: () => ({ meta: [{ title: "Whitelist Manager — Nalyy Gate" }] }),
@@ -26,7 +28,14 @@ export const Route = createFileRoute("/_app/whitelist")({
 
 function Whitelist() {
   const [q, setQ] = useState("");
-  const filtered = whitelist.filter(
+  const scriptsQuery = useQuery({ queryKey: ["scripts"], queryFn: apiClient.scripts });
+  const whitelistQuery = useQuery({ queryKey: ["whitelist"], queryFn: apiClient.whitelist });
+  const liveScripts = scriptsQuery.data ?? scripts;
+  const liveWhitelist = whitelistQuery.data ?? whitelist;
+  const [scriptId, setScriptId] = useState("");
+  const [discordId, setDiscordId] = useState("");
+  const [hwid, setHwid] = useState("");
+  const filtered = liveWhitelist.filter(
     (w) =>
       w.discordTag.toLowerCase().includes(q.toLowerCase()) ||
       w.discordId.includes(q) ||
@@ -56,19 +65,25 @@ function Whitelist() {
                 className="space-y-4"
                 onSubmit={(e) => {
                   e.preventDefault();
-                  toast.success("User whitelisted (demo)");
+                  apiClient
+                    .addWhitelist({ scriptId: scriptId || liveScripts[0]?.id, discordId, hwid: hwid || undefined })
+                    .then(() => {
+                      toast.success("User whitelisted");
+                      whitelistQuery.refetch();
+                    })
+                    .catch((error) => toast.error(error.message));
                 }}
               >
                 <div className="space-y-2">
                   <Label className="text-xs uppercase tracking-widest text-muted-foreground">Discord ID or tag</Label>
-                  <Input required placeholder="user#1234 or 1234567890" />
+                  <Input required value={discordId} onChange={(e) => setDiscordId(e.target.value)} placeholder="1234567890" />
                 </div>
                 <div className="space-y-2">
                   <Label className="text-xs uppercase tracking-widest text-muted-foreground">Script</Label>
-                  <Select defaultValue={scripts[0].id}>
+                  <Select value={scriptId || liveScripts[0]?.id} onValueChange={setScriptId}>
                     <SelectTrigger><SelectValue /></SelectTrigger>
                     <SelectContent>
-                      {scripts.map((s) => (
+                      {liveScripts.map((s) => (
                         <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>
                       ))}
                     </SelectContent>
@@ -76,7 +91,7 @@ function Whitelist() {
                 </div>
                 <div className="space-y-2">
                   <Label className="text-xs uppercase tracking-widest text-muted-foreground">HWID (optional)</Label>
-                  <Input placeholder="A8F3-EE21-9BC4-DD77" />
+                  <Input value={hwid} onChange={(e) => setHwid(e.target.value)} placeholder="DEVICE-ID-OPTIONAL" />
                 </div>
                 <DialogFooter>
                   <Button type="submit" variant="hero">Whitelist user</Button>
@@ -88,9 +103,9 @@ function Whitelist() {
       />
 
       <div className="grid gap-4 sm:grid-cols-3">
-        <StatRow label="Whitelisted users" value={whitelist.length} />
-        <StatRow label="Online now" value={whitelist.filter((w) => w.status === "online").length} accent />
-        <StatRow label="Scripts covered" value={new Set(whitelist.map((w) => w.script)).size} />
+        <StatRow label="Whitelisted users" value={liveWhitelist.length} />
+        <StatRow label="Active now" value={liveWhitelist.filter((w) => w.status === "online").length} accent />
+        <StatRow label="Scripts covered" value={new Set(liveWhitelist.map((w) => w.script)).size} />
       </div>
 
       <div className="rounded-2xl border border-border bg-card/50 backdrop-blur">
@@ -161,7 +176,15 @@ function Whitelist() {
                       variant="ghost"
                       size="icon"
                       className="text-destructive hover:bg-destructive/15"
-                      onClick={() => toast.success("User removed (demo)")}
+                      onClick={() => {
+                        apiClient
+                          .removeWhitelist({ scriptId: w.scriptId, discordId: w.discordId })
+                          .then(() => {
+                            toast.success("User removed");
+                            whitelistQuery.refetch();
+                          })
+                          .catch((error) => toast.error(error.message));
+                      }}
                     >
                       <Trash2 className="h-4 w-4" />
                     </Button>

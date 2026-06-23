@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { PlusCircle, Search, FileCode2, Users, KeyRound, Activity } from "lucide-react";
 import { PageHeader } from "@/components/page-header";
@@ -6,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScriptStatus } from "./_app.dashboard";
 import { scripts } from "@/lib/mock-data";
+import { apiClient } from "@/lib/api-client";
 
 export const Route = createFileRoute("/_app/scripts/")({
   head: () => ({ meta: [{ title: "My Scripts — Nalyy Gate" }] }),
@@ -14,9 +16,11 @@ export const Route = createFileRoute("/_app/scripts/")({
 
 function ScriptsList() {
   const [q, setQ] = useState("");
+  const scriptsQuery = useQuery({ queryKey: ["scripts"], queryFn: apiClient.scripts });
+  const liveScripts = scriptsQuery.data ?? scripts;
   const filtered = useMemo(
-    () => scripts.filter((s) => s.name.toLowerCase().includes(q.toLowerCase())),
-    [q],
+    () => liveScripts.filter((s) => s.name.toLowerCase().includes(q.toLowerCase())),
+    [liveScripts, q],
   );
 
   return (

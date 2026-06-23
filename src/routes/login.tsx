@@ -32,12 +32,9 @@ function Login() {
 
         <div className="mt-8 space-y-3">
           <Button asChild variant="discord" size="lg" className="w-full">
-            <Link to="/dashboard">
+            <a href="/api/auth/discord">
               <DiscordIcon /> Continue with Discord
-            </Link>
-          </Button>
-          <Button asChild variant="outline" size="lg" className="w-full">
-            <Link to="/dashboard">Continue as Guest (demo)</Link>
+            </a>
           </Button>
         </div>
 

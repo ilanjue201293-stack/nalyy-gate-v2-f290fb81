@@ -5,8 +5,8 @@ import { PageHeader } from "@/components/page-header";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
+import { apiClient } from "@/lib/api-client";
 
 export const Route = createFileRoute("/_app/scripts/add")({
   head: () => ({ meta: [{ title: "Add Script — Nalyy Gate" }] }),
@@ -26,8 +26,13 @@ function AddScript() {
   const navigate = useNavigate();
   const [apiKey, setApiKey] = useState(genKey());
   const [mode, setMode] = useState<LicenseMode>("key");
-  const [trialAmount, setTrialAmount] = useState(30);
-  const [trialUnit, setTrialUnit] = useState<"seconds" | "minutes" | "hours">("minutes");
+  const [trialAmount, setTrialAmount] = useState(24);
+  const [trialUnit, setTrialUnit] = useState<"minutes" | "hours" | "days">("hours");
+  const [name, setName] = useState("");
+  const [discordRoleId, setDiscordRoleId] = useState("");
+  const [obfuscate, setObfuscate] = useState(true);
+  const [scriptContent, setScriptContent] = useState("");
+  const [saving, setSaving] = useState(false);
 
   return (
     <div className="space-y-6">
@@ -46,18 +51,38 @@ function AddScript() {
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          toast.success("Script created (demo)", { description: "Backend wiring coming soon." });
-          navigate({ to: "/scripts" });
+          setSaving(true);
+          apiClient
+            .createScript({
+              name,
+              description: "",
+              game: "Script",
+              scriptContent,
+              apiKey,
+              discordRoleId: discordRoleId || undefined,
+              hwidLock: false,
+              obfuscate,
+              status: "active",
+              accessMode: mode,
+              trialDurationAmount: mode === "trial" ? trialAmount : undefined,
+              trialDurationUnit: mode === "trial" ? trialUnit : undefined,
+            })
+            .then(() => {
+              toast.success("Script created");
+              navigate({ to: "/scripts" });
+            })
+            .catch((error) => toast.error(error.message))
+            .finally(() => setSaving(false));
         }}
         className="grid gap-6 lg:grid-cols-3"
       >
         <div className="space-y-6 lg:col-span-2">
           <Card title="Script details">
             <Field label="Script name" required>
-              <Input required placeholder="e.g. Aurora Hub" />
+              <Input required value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Creator Access Portal" />
             </Field>
-            <Field label="Linked Discord role">
-              <Input placeholder="e.g. Aurora Premium" />
+            <Field label="Linked Discord role ID">
+              <Input value={discordRoleId} onChange={(e) => setDiscordRoleId(e.target.value)} placeholder="Role ID" />
             </Field>
           </Card>
 
@@ -66,8 +91,26 @@ function AddScript() {
               <Upload className="h-8 w-8 text-muted-foreground" />
               <div className="text-sm font-medium">Drop your .lua / .luau here</div>
               <div className="text-xs text-muted-foreground">or click to browse · max 5MB</div>
-              <input type="file" className="hidden" accept=".lua,.luau,.txt" />
+              <input
+                type="file"
+                className="hidden"
+                accept=".lua,.luau,.txt"
+                onChange={async (event) => {
+                  const file = event.target.files?.[0];
+                  if (file) setScriptContent(await file.text());
+                }}
+              />
             </label>
+            <Field label="Or paste script content" required>
+              <textarea
+                required
+                value={scriptContent}
+                onChange={(e) => setScriptContent(e.target.value)}
+                rows={10}
+                className="w-full rounded-xl border border-border bg-background/40 p-3 font-mono text-xs outline-none ring-primary/30 focus:ring-2"
+                placeholder="Paste the authorized script content here..."
+              />
+            </Field>
           </Card>
 
           <Card title="Access mode">
@@ -77,28 +120,27 @@ function AddScript() {
                 onClick={() => setMode("free")}
                 icon={Gift}
                 title="Free"
-                desc="No key required. Anyone can execute."
+                desc="No key required."
               />
               <ModeCard
                 active={mode === "trial"}
                 onClick={() => setMode("trial")}
                 icon={TimerReset}
                 title="Trial"
-                desc="Free time-limited access per user."
+                desc="Temporary access."
               />
               <ModeCard
                 active={mode === "key"}
                 onClick={() => setMode("key")}
                 icon={Lock}
                 title="Key system"
-                desc="Users must redeem a key to access."
+                desc="Redeem key required."
               />
             </div>
-
             {mode === "trial" && (
               <div className="mt-4 rounded-xl border border-border bg-background/40 p-4">
                 <Label className="text-xs uppercase tracking-widest text-muted-foreground">
-                  Trial duration
+                  Trial period
                 </Label>
                 <div className="mt-2 flex gap-2">
                   <Input
@@ -106,20 +148,18 @@ function AddScript() {
                     min={1}
                     value={trialAmount}
                     onChange={(e) => setTrialAmount(Number(e.target.value))}
-                    className="w-32"
+                    className="w-28"
                   />
-                  <Select value={trialUnit} onValueChange={(v) => setTrialUnit(v as typeof trialUnit)}>
-                    <SelectTrigger className="w-40"><SelectValue /></SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="seconds">Seconds</SelectItem>
-                      <SelectItem value="minutes">Minutes</SelectItem>
-                      <SelectItem value="hours">Hours</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <select
+                    value={trialUnit}
+                    onChange={(e) => setTrialUnit(e.target.value as typeof trialUnit)}
+                    className="h-10 rounded-md border border-border bg-background px-3 text-sm"
+                  >
+                    <option value="minutes">Minutes</option>
+                    <option value="hours">Hours</option>
+                    <option value="days">Days</option>
+                  </select>
                 </div>
-                <p className="mt-2 text-xs text-muted-foreground">
-                  Each user gets {trialAmount} {trialUnit} of free access before needing a key.
-                </p>
               </div>
             )}
           </Card>
@@ -143,9 +183,31 @@ function AddScript() {
               <Sparkles className="h-4 w-4" /> Regenerate
             </Button>
           </Card>
+          <Card title="Runtime security">
+            <label className="flex items-center justify-between gap-3 rounded-xl border border-border bg-background/40 p-3 text-sm">
+              <span>
+                <span className="block font-medium">Obfuscate source</span>
+                <span className="block text-[11px] text-muted-foreground">Encode script before serving it.</span>
+              </span>
+              <button
+                type="button"
+                onClick={() => setObfuscate((value) => !value)}
+                className={`relative h-6 w-11 rounded-full transition ${obfuscate ? "bg-primary" : "bg-muted"}`}
+                aria-pressed={obfuscate}
+              >
+                <span
+                  className={`absolute top-1 h-4 w-4 rounded-full bg-white transition ${
+                    obfuscate ? "left-6" : "left-1"
+                  }`}
+                />
+              </button>
+            </label>
+          </Card>
 
           <div className="flex flex-col gap-2">
-            <Button type="submit" variant="hero" size="lg">Create Script</Button>
+            <Button type="submit" variant="hero" size="lg" disabled={saving}>
+              {saving ? "Creating..." : "Create Script"}
+            </Button>
             <Button type="button" variant="ghost" asChild>
               <Link to="/scripts">Cancel</Link>
             </Button>
