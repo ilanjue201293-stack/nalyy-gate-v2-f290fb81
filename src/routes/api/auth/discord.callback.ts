@@ -54,7 +54,14 @@ export const Route = createFileRoute("/api/auth/discord/callback")({
         });
 
         if (!tokenResponse.ok) {
-          return Response.redirect(`${appUrl}/login?error=discord_token`, 302);
+          const error = await readDiscordError(tokenResponse);
+          const reason =
+            error?.error === "invalid_client"
+              ? "discord_secret"
+              : error?.error === "invalid_grant"
+                ? "discord_grant"
+                : "discord_token";
+          return Response.redirect(`${appUrl}/login?error=${reason}`, 302);
         }
 
         const token = (await tokenResponse.json()) as { access_token: string };
@@ -66,50 +73,63 @@ export const Route = createFileRoute("/api/auth/discord/callback")({
           return Response.redirect(`${appUrl}/login?error=discord_user`, 302);
         }
 
-        const discordUser = (await userResponse.json()) as DiscordUser;
-        const existingAdmins = await prisma.user.count({ where: { isAdmin: true } });
-        const adminIds = (process.env.DISCORD_ADMIN_IDS ?? "")
-          .split(",")
-          .map((id) => id.trim())
-          .filter(Boolean);
-        const existingUser = await prisma.user.findUnique({
-          where: { discordId: discordUser.id },
-          select: { avatar: true },
-        });
-        const discordAvatar = getAvatarUrl(discordUser.id, discordUser.avatar);
+        try {
+          const discordUser = (await userResponse.json()) as DiscordUser;
+          const existingAdmins = await prisma.user.count({ where: { isAdmin: true } });
+          const adminIds = (process.env.DISCORD_ADMIN_IDS ?? "")
+            .split(",")
+            .map((id) => id.trim())
+            .filter(Boolean);
+          const existingUser = await prisma.user.findUnique({
+            where: { discordId: discordUser.id },
+            select: { avatar: true },
+          });
+          const discordAvatar = getAvatarUrl(discordUser.id, discordUser.avatar);
 
-        const user = await prisma.user.upsert({
-          where: { discordId: discordUser.id },
-          create: {
-            discordId: discordUser.id,
-            username: discordUser.global_name ?? discordUser.username,
-            avatar: discordAvatar,
-            email: discordUser.email,
-            isAdmin: existingAdmins === 0 || adminIds.includes(discordUser.id),
-          },
-          update: {
-            username: discordUser.global_name ?? discordUser.username,
-            avatar: existingUser?.avatar ?? discordAvatar,
-            email: discordUser.email,
-            isAdmin: adminIds.includes(discordUser.id) ? true : undefined,
-          },
-        });
+          const user = await prisma.user.upsert({
+            where: { discordId: discordUser.id },
+            create: {
+              discordId: discordUser.id,
+              username: discordUser.global_name ?? discordUser.username,
+              avatar: discordAvatar,
+              email: discordUser.email,
+              isAdmin: existingAdmins === 0 || adminIds.includes(discordUser.id),
+            },
+            update: {
+              username: discordUser.global_name ?? discordUser.username,
+              avatar: existingUser?.avatar ?? discordAvatar,
+              email: discordUser.email,
+              isAdmin: adminIds.includes(discordUser.id) ? true : undefined,
+            },
+          });
 
-        const session = await createSession(user.id);
-        const headers = new Headers({
-          location: `${appUrl}/dashboard`,
-        });
-        headers.append("set-cookie", sessionCookie(session.token, session.expiresAt));
-        headers.append(
-          "set-cookie",
-          "ng_oauth_state=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0",
-        );
+          const session = await createSession(user.id);
+          const headers = new Headers({
+            location: `${appUrl}/dashboard`,
+          });
+          headers.append("set-cookie", sessionCookie(session.token, session.expiresAt));
+          headers.append(
+            "set-cookie",
+            "ng_oauth_state=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0",
+          );
 
-        return new Response(null, {
-          status: 302,
-          headers,
-        });
+          return new Response(null, {
+            status: 302,
+            headers,
+          });
+        } catch (error) {
+          console.error("Discord login database failure", error);
+          return Response.redirect(`${appUrl}/login?error=database`, 302);
+        }
       },
     },
   },
 });
+
+async function readDiscordError(response: Response) {
+  try {
+    return (await response.json()) as { error?: string; error_description?: string };
+  } catch {
+    return null;
+  }
+}

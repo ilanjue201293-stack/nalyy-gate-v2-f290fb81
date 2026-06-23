@@ -17,11 +17,17 @@ function Login() {
         ? "Discord login is missing CLIENT ID or CLIENT SECRET in Vercel."
         : error === "oauth_state"
       ? "Discord login expired. Try again."
-      : error === "discord_token"
-        ? "Discord refused the callback. Check the redirect URL in Developer Portal."
-        : error === "discord_user"
-          ? "Discord profile could not be loaded. Try again."
-          : null;
+      : error === "discord_secret"
+        ? "Discord Client Secret is invalid. Copy the newest Client Secret into Vercel, then redeploy."
+        : error === "discord_grant"
+          ? "Discord refused this login code. Start again from this button, and keep the redirect URL exactly the same."
+          : error === "discord_token"
+            ? "Discord refused the callback. Check the redirect URL and Client Secret."
+            : error === "discord_user"
+              ? "Discord profile could not be loaded. Try again."
+              : error === "database"
+                ? "Login reached Discord, but the database is not ready on Vercel."
+                : null;
 
   return (
     <div className="relative grid min-h-screen place-items-center overflow-hidden px-4">
