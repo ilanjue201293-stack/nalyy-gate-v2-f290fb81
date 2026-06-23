@@ -6,7 +6,6 @@ import {
   BarChart3,
   Cpu,
   Lock,
-  Zap,
   ArrowRight,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -56,11 +55,6 @@ const features = [
     icon: Cpu,
     title: "Discord OAuth",
     desc: "Sign-in with Discord and sync roles automatically with your premium tiers.",
-  },
-  {
-    icon: Zap,
-    title: "Edge Delivery",
-    desc: "Scripts served from a low-latency edge network so your users load in milliseconds.",
   },
 ];
 
