@@ -1,4 +1,4 @@
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { createFileRoute, Link, notFound, redirect } from "@tanstack/react-router";
 import { useState } from "react";
 import {
   ArrowLeft,
@@ -24,14 +24,30 @@ export const Route = createFileRoute("/_app/scripts/$id")({
     const s = scripts.find((x) => x.id === params.id);
     return { meta: [{ title: `${s?.name ?? "Script"} — Nalyy Gate` }] };
   },
-  loader: ({ params }) => {
+  validateSearch: (s: Record<string, unknown>) => ({
+    key: typeof s.key === "string" ? s.key : undefined,
+  }),
+  loaderDeps: ({ search }) => ({ key: search.key }),
+  loader: ({ params, deps }) => {
     const s = scripts.find((x) => x.id === params.id);
     if (!s) throw notFound();
+    // If accessed via the script's API link, validate the key matches.
+    if (deps.key !== undefined && deps.key !== s.apiKey) {
+      throw redirect({
+        to: "/access-denied",
+        search: { script: s.name, reason: "Invalid or expired API key for this script." },
+      });
+    }
     return { script: s };
   },
   notFoundComponent: () => (
     <div className="grid min-h-[40vh] place-items-center text-muted-foreground">
       Script not found.
+    </div>
+  ),
+  errorComponent: () => (
+    <div className="grid min-h-[40vh] place-items-center text-muted-foreground">
+      Something went wrong loading this script.
     </div>
   ),
   component: ScriptDetails,
