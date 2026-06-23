@@ -644,11 +644,12 @@ client.on(Events.InteractionCreate, async (interaction) => {
         .setFooter({ text: `Sent by ${interaction.user.tag}` })
         .setTimestamp(new Date());
 
-      if (!interaction.channel || !("send" in interaction.channel)) {
-        throw new Error("I cannot post a panel in this channel.");
-      }
-      await interaction.channel.send({ embeds: [embed], components: scriptButtons(script.id) });
       await interaction.update({ content: `Panel posted for **${script.name}**.`, components: [] });
+      await interaction.followUp({
+        embeds: [embed],
+        components: scriptButtons(script.id),
+        ephemeral: false,
+      });
       return;
     }
 
