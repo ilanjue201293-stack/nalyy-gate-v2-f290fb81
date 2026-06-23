@@ -16,11 +16,13 @@ export function PublicAuthButton({
   dashboardLabel?: string;
   className?: string;
 }) {
+  const isBrowser = typeof window !== "undefined";
   const meQuery = useQuery({
     queryKey: ["me"],
-    queryFn: apiClient.me,
+    queryFn: () => apiClient.me().catch(() => ({ user: null })),
     retry: false,
     staleTime: 30_000,
+    enabled: isBrowser,
   });
   const loggedIn = !!meQuery.data?.user;
 

@@ -19,7 +19,12 @@ export const Route = createFileRoute("/_app/settings")({
 
 function Settings() {
   const queryClient = useQueryClient();
-  const meQuery = useQuery({ queryKey: ["me"], queryFn: apiClient.me, retry: false });
+  const meQuery = useQuery({
+    queryKey: ["me"],
+    queryFn: () => apiClient.me().catch(() => ({ user: null })),
+    retry: false,
+    enabled: typeof window !== "undefined",
+  });
   const user = meQuery.data?.user;
   const plan = getPlan(user?.plan);
   const [username, setUsername] = useState("");

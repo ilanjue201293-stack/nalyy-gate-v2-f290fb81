@@ -36,7 +36,13 @@ const icons: Record<PlanId, typeof Sparkles> = {
 function Pricing() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const meQuery = useQuery({ queryKey: ["me"], queryFn: apiClient.me, retry: false, staleTime: 30_000 });
+  const meQuery = useQuery({
+    queryKey: ["me"],
+    queryFn: () => apiClient.me().catch(() => ({ user: null })),
+    retry: false,
+    staleTime: 30_000,
+    enabled: typeof window !== "undefined",
+  });
   const activePlan = normalizePlan(meQuery.data?.user?.plan);
   const selectPlan = useMutation({
     mutationFn: apiClient.selectPlan,
