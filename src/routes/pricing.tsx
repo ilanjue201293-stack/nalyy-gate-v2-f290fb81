@@ -44,7 +44,8 @@ const plans: Plan[] = [
     cta: "Start Free",
     limits: { scripts: "5 scripts", keys: "15 keys", whitelist: "5 whitelist" },
     features: [
-      "Free / Trial / Key system modes",
+      "Free mode & Key system",
+      "Lifetime keys",
       "HWID lock & Discord ID lock",
       "Basic statistics",
       "Community support",
@@ -59,10 +60,10 @@ const plans: Plan[] = [
     cta: "Go Plus",
     limits: { scripts: "15 scripts", keys: "30 keys", whitelist: "20 whitelist" },
     features: [
-      "Everything in Free",
+      "Best rentability plan",
       "Trial mode (custom duration)",
-      "One-time & lifetime keys",
-      "Email support",
+      "One-time keys",
+      "Stats per user",
     ],
   },
   {
@@ -76,7 +77,7 @@ const plans: Plan[] = [
     limits: { scripts: "30 scripts", keys: "70 keys", whitelist: "50 whitelist" },
     features: [
       "Everything in Plus",
-      "Advanced statistics & per-user drill-down",
+      "Advanced statistics",
       "Multi-HWID keys",
       "Priority Discord support",
     ],
@@ -93,7 +94,6 @@ const plans: Plan[] = [
       "Everything in Pro",
       "Zero limits across the board",
       "Early access to new features",
-      "1-on-1 onboarding",
     ],
   },
 ];

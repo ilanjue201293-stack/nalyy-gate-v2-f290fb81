@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as HowItWorksRouteImport } from './routes/how-it-works'
+import { Route as BotRouteImport } from './routes/bot'
 import { Route as AccessDeniedRouteImport } from './routes/access-denied'
 import { Route as AppRouteImport } from './routes/_app'
 import { Route as IndexRouteImport } from './routes/index'
@@ -37,6 +38,11 @@ const LoginRoute = LoginRouteImport.update({
 const HowItWorksRoute = HowItWorksRouteImport.update({
   id: '/how-it-works',
   path: '/how-it-works',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BotRoute = BotRouteImport.update({
+  id: '/bot',
+  path: '/bot',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AccessDeniedRoute = AccessDeniedRouteImport.update({
@@ -97,6 +103,7 @@ const AppScriptsIdRoute = AppScriptsIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/access-denied': typeof AccessDeniedRoute
+  '/bot': typeof BotRoute
   '/how-it-works': typeof HowItWorksRoute
   '/login': typeof LoginRoute
   '/pricing': typeof PricingRoute
@@ -112,6 +119,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/access-denied': typeof AccessDeniedRoute
+  '/bot': typeof BotRoute
   '/how-it-works': typeof HowItWorksRoute
   '/login': typeof LoginRoute
   '/pricing': typeof PricingRoute
@@ -129,6 +137,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_app': typeof AppRouteWithChildren
   '/access-denied': typeof AccessDeniedRoute
+  '/bot': typeof BotRoute
   '/how-it-works': typeof HowItWorksRoute
   '/login': typeof LoginRoute
   '/pricing': typeof PricingRoute
@@ -146,6 +155,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/access-denied'
+    | '/bot'
     | '/how-it-works'
     | '/login'
     | '/pricing'
@@ -161,6 +171,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/access-denied'
+    | '/bot'
     | '/how-it-works'
     | '/login'
     | '/pricing'
@@ -177,6 +188,7 @@ export interface FileRouteTypes {
     | '/'
     | '/_app'
     | '/access-denied'
+    | '/bot'
     | '/how-it-works'
     | '/login'
     | '/pricing'
@@ -194,6 +206,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AppRoute: typeof AppRouteWithChildren
   AccessDeniedRoute: typeof AccessDeniedRoute
+  BotRoute: typeof BotRoute
   HowItWorksRoute: typeof HowItWorksRoute
   LoginRoute: typeof LoginRoute
   PricingRoute: typeof PricingRoute
@@ -220,6 +233,13 @@ declare module '@tanstack/react-router' {
       path: '/how-it-works'
       fullPath: '/how-it-works'
       preLoaderRoute: typeof HowItWorksRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/bot': {
+      id: '/bot'
+      path: '/bot'
+      fullPath: '/bot'
+      preLoaderRoute: typeof BotRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/access-denied': {
@@ -330,6 +350,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AppRoute: AppRouteWithChildren,
   AccessDeniedRoute: AccessDeniedRoute,
+  BotRoute: BotRoute,
   HowItWorksRoute: HowItWorksRoute,
   LoginRoute: LoginRoute,
   PricingRoute: PricingRoute,

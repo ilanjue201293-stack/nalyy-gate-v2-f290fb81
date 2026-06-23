@@ -7,6 +7,7 @@ import {
   BarChart3,
   Settings,
   PlusCircle,
+  Bot,
   LogOut,
 } from "lucide-react";
 import {
@@ -31,6 +32,7 @@ const nav = [
   { title: "Key Manager", url: "/keys", icon: KeyRound },
   { title: "Whitelist", url: "/whitelist", icon: ShieldCheck },
   { title: "Statistics", url: "/statistics", icon: BarChart3 },
+  { title: "Get Bot", url: "/bot", icon: Bot },
   { title: "Settings", url: "/settings", icon: Settings },
 ];
 

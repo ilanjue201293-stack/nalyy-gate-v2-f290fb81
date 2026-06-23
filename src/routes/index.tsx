@@ -72,6 +72,7 @@ function Landing() {
             <a href="#features" className="hover:text-foreground">Features</a>
             <Link to="/how-it-works" className="hover:text-foreground">How it works</Link>
             <Link to="/pricing" className="hover:text-foreground">Pricing</Link>
+            <Link to="/bot" className="hover:text-foreground">Get Bot</Link>
           </nav>
           <div className="flex items-center gap-2">
             <Button asChild variant="ghost" size="sm" className="hidden sm:inline-flex">
