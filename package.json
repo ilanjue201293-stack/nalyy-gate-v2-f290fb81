@@ -8,6 +8,7 @@
     "build": "node scripts/ensure-build-env.mjs && vite build",
     "build:dev": "vite build --mode development",
     "preview": "vite preview",
+    "postinstall": "node scripts/ensure-build-env.mjs && prisma generate",
     "start": "node scripts/start-hosted.mjs",
     "deploy:build": "node scripts/ensure-build-env.mjs && prisma generate && vite build",
     "db:generate": "prisma generate",

@@ -1,13 +1,12 @@
-import { randomBytes } from "node:crypto";
 import type { DeviceType, DurationUnit, Prisma, ScriptStatus } from "@prisma/client";
 import { prisma } from "./prisma";
 
 export function generateApiKey() {
-  return `ng_sk_${randomBytes(24).toString("hex")}`;
+  return `ng_sk_${randomHex(24)}`;
 }
 
 export function generateLicenseKey(prefix = "NALYY") {
-  const parts = Array.from({ length: 4 }, () => randomBytes(2).toString("hex").toUpperCase());
+  const parts = Array.from({ length: 4 }, () => randomHex(2).toUpperCase());
   return `${prefix}-${parts.join("-")}`;
 }
 
@@ -194,9 +193,21 @@ end`;
 }
 
 function randomLuaName() {
-  return `_${randomBytes(5).toString("hex")}`;
+  return `_${randomHex(5)}`;
 }
 
 function randomByte(min: number, max: number) {
-  return min + (randomBytes(1)[0] % (max - min + 1));
+  return min + (secureRandomByte() % (max - min + 1));
+}
+
+function randomHex(bytes: number) {
+  return Array.from({ length: bytes }, () => secureRandomByte().toString(16).padStart(2, "0")).join("");
+}
+
+function secureRandomByte() {
+  const cryptoApi = globalThis.crypto;
+  if (cryptoApi?.getRandomValues) {
+    return cryptoApi.getRandomValues(new Uint8Array(1))[0];
+  }
+  return Math.floor(Math.random() * 256);
 }
