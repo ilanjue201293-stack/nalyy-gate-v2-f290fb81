@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AccessDeniedRouteImport } from './routes/access-denied'
 import { Route as AppRouteImport } from './routes/_app'
@@ -22,6 +23,11 @@ import { Route as AppScriptsIndexRouteImport } from './routes/_app.scripts.index
 import { Route as AppScriptsAddRouteImport } from './routes/_app.scripts.add'
 import { Route as AppScriptsIdRouteImport } from './routes/_app.scripts.$id'
 
+const PricingRoute = PricingRouteImport.update({
+  id: '/pricing',
+  path: '/pricing',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
@@ -86,6 +92,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/access-denied': typeof AccessDeniedRoute
   '/login': typeof LoginRoute
+  '/pricing': typeof PricingRoute
   '/dashboard': typeof AppDashboardRoute
   '/keys': typeof AppKeysRoute
   '/settings': typeof AppSettingsRoute
@@ -99,6 +106,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/access-denied': typeof AccessDeniedRoute
   '/login': typeof LoginRoute
+  '/pricing': typeof PricingRoute
   '/dashboard': typeof AppDashboardRoute
   '/keys': typeof AppKeysRoute
   '/settings': typeof AppSettingsRoute
@@ -114,6 +122,7 @@ export interface FileRoutesById {
   '/_app': typeof AppRouteWithChildren
   '/access-denied': typeof AccessDeniedRoute
   '/login': typeof LoginRoute
+  '/pricing': typeof PricingRoute
   '/_app/dashboard': typeof AppDashboardRoute
   '/_app/keys': typeof AppKeysRoute
   '/_app/settings': typeof AppSettingsRoute
@@ -129,6 +138,7 @@ export interface FileRouteTypes {
     | '/'
     | '/access-denied'
     | '/login'
+    | '/pricing'
     | '/dashboard'
     | '/keys'
     | '/settings'
@@ -142,6 +152,7 @@ export interface FileRouteTypes {
     | '/'
     | '/access-denied'
     | '/login'
+    | '/pricing'
     | '/dashboard'
     | '/keys'
     | '/settings'
@@ -156,6 +167,7 @@ export interface FileRouteTypes {
     | '/_app'
     | '/access-denied'
     | '/login'
+    | '/pricing'
     | '/_app/dashboard'
     | '/_app/keys'
     | '/_app/settings'
@@ -171,10 +183,18 @@ export interface RootRouteChildren {
   AppRoute: typeof AppRouteWithChildren
   AccessDeniedRoute: typeof AccessDeniedRoute
   LoginRoute: typeof LoginRoute
+  PricingRoute: typeof PricingRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/pricing': {
+      id: '/pricing'
+      path: '/pricing'
+      fullPath: '/pricing'
+      preLoaderRoute: typeof PricingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/login': {
       id: '/login'
       path: '/login'
@@ -291,6 +311,7 @@ const rootRouteChildren: RootRouteChildren = {
   AppRoute: AppRouteWithChildren,
   AccessDeniedRoute: AccessDeniedRoute,
   LoginRoute: LoginRoute,
+  PricingRoute: PricingRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
