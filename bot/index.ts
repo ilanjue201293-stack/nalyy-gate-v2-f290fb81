@@ -279,8 +279,24 @@ function scriptButtons(scriptId: string) {
 }
 
 function loaderFor(scriptId: string, keyValue?: string | null) {
-  if (!keyValue) return `loadstring(game:HttpGet("${loaderBaseUrl}/api/loader/${scriptId}"))()`;
-  return `getgenv().SCRIPT_KEY = "${keyValue}"\nscript_key = getgenv().SCRIPT_KEY\n\nloadstring(game:HttpGet("${loaderBaseUrl}/api/loader/${scriptId}"))()`;
+  const bootstrap = `
+local hwid = "unknown"
+pcall(function()
+  if game and game.GetService then
+    hwid = game:GetService("RbxAnalyticsService"):GetClientId()
+  end
+end)
+
+local env = (getgenv and getgenv()) or _G
+local key = script_key or (env and (env.SCRIPT_KEY or env.script_key))
+local url = "${loaderBaseUrl}/api/loader/${scriptId}?hwid=" .. tostring(hwid)
+if key and key ~= "" then
+  url = url .. "&key=" .. tostring(key)
+end
+loadstring(game:HttpGet(url))()
+`.trim();
+  if (!keyValue) return bootstrap;
+  return `script_key = "${keyValue}"\n\n${bootstrap}`;
 }
 
 function expiresAtLabel(date?: Date | null) {
