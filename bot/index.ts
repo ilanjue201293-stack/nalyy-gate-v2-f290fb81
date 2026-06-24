@@ -56,7 +56,13 @@ if (!token || !clientId) {
   throw new Error("DISCORD_BOT_TOKEN and DISCORD_CLIENT_ID are required to run the bot.");
 }
 
-if (!databaseUrl || databaseUrl.startsWith("file:") || databaseUrl.includes("dev.db")) {
+if (
+  !databaseUrl ||
+  databaseUrl.startsWith("file:") ||
+  databaseUrl.includes("dev.db") ||
+  databaseUrl.includes("localhost:5432") ||
+  databaseUrl.includes("127.0.0.1:5432")
+) {
   throw new Error(
     [
       "The bot is not connected to the hosted database.",
