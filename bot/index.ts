@@ -67,6 +67,20 @@ if (!databaseUrl || databaseUrl.startsWith("file:") || databaseUrl.includes("dev
 console.log(`Nalyy Gate bot API URL: ${appUrl}`);
 console.log(`Nalyy Gate loader URL: ${loaderBaseUrl}`);
 
+async function safeReply(interaction: any, content: string) {
+  if (!interaction.isRepliable()) return;
+  try {
+    if (interaction.replied || interaction.deferred) {
+      await interaction.followUp({ content, ephemeral: true });
+    } else {
+      await interaction.reply({ content, ephemeral: true });
+    }
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    console.warn(`Could not send Discord interaction response: ${message}`);
+  }
+}
+
 const durationUnitChoices = [
   { name: "minutes", value: "minutes" },
   { name: "hours", value: "hours" },
@@ -858,13 +872,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
     }
   } catch (error) {
     const message = error instanceof Error ? error.message : "Something went wrong.";
-    if (interaction.isRepliable()) {
-      if (interaction.replied || interaction.deferred) {
-        await interaction.followUp({ content: message, ephemeral: true });
-      } else {
-        await interaction.reply({ content: message, ephemeral: true });
-      }
-    }
+    await safeReply(interaction, message);
   }
 });
 
