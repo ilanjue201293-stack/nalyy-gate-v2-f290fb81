@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/_app")({
   beforeLoad: async () => {
-    if (typeof window === "undefined") return;
     const response = await fetch("/api/auth/me");
     if (!response.ok) {
       throw redirect({ to: "/login" });

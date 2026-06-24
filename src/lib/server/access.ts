@@ -168,6 +168,35 @@ export function normalizeDeviceType(deviceType: unknown): DeviceType {
 
 type ObfuscationLevel = "medium" | "strong";
 
+export function prepareRuntimeSource(source: string, obfuscate: boolean) {
+  const guarded = `${antiCopyGuard()}\n${source}`;
+  return obfuscate ? obfuscateLua(guarded) : guarded;
+}
+
+function antiCopyGuard() {
+  return `do
+  local env=(getgenv and getgenv()) or _G
+  local suspicious=false
+  local names={"hookfunction","writefile","appendfile","setclipboard","getgc","getconnections","getconstants","getprotos","getproto","debug"}
+  for i=1,#names do
+    if env and rawget(env,names[i]) ~= nil then
+      suspicious=true
+      break
+    end
+  end
+  if suspicious then
+    pcall(function()
+      local player=game:GetService("Players").LocalPlayer
+      if player then
+        player:Kick("Nalyy Gate: source copy attempt detected.")
+      end
+    end)
+    error("Nalyy Gate: source copy attempt detected.")
+    return
+  end
+end`;
+}
+
 export function obfuscateLua(source: string, _level: ObfuscationLevel = "medium") {
   const key = randomByte(25, 230);
   const shift = randomByte(3, 47);

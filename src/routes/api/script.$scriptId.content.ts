@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { badRequest } from "@/lib/server/http";
-import { obfuscateLua } from "@/lib/server/access";
+import { prepareRuntimeSource } from "@/lib/server/access";
 import { prisma } from "@/lib/server/prisma";
 
 export const Route = createFileRoute("/api/script/$scriptId/content")({
@@ -16,7 +16,7 @@ export const Route = createFileRoute("/api/script/$scriptId/content")({
         if (!script || script.status !== "active") return badRequest("Script is not available");
         if (apiKey !== script.apiKey) return badRequest("Invalid API key");
         if (script.accessMode === "free") {
-          return new Response(obfuscateLua(script.scriptContent), {
+          return new Response(prepareRuntimeSource(script.scriptContent, script.obfuscate), {
             headers: {
               "content-type": "text/plain; charset=utf-8",
               "cache-control": "no-store",
@@ -42,7 +42,7 @@ export const Route = createFileRoute("/api/script/$scriptId/content")({
         if (!key) return badRequest("No active key found");
         if (key.maxHwids > 0 && whitelist.hwid && hwid && whitelist.hwid !== hwid) return badRequest("HWID does not match");
 
-        return new Response(obfuscateLua(script.scriptContent), {
+        return new Response(prepareRuntimeSource(script.scriptContent, script.obfuscate), {
           headers: {
             "content-type": "text/plain; charset=utf-8",
             "cache-control": "no-store",
