@@ -24,7 +24,7 @@ import { calculateExpiry, generateLicenseKey } from "./lib/access.js";
 
 const token = process.env.DISCORD_BOT_TOKEN;
 const clientId = process.env.DISCORD_CLIENT_ID;
-const appUrl = process.env.APP_URL ?? "https://nally-gate.vercel.app";
+const appUrl = process.env.APP_URL ?? "https://nalyy-gate.vercel.app";
 const loaderBaseUrl = process.env.LOADER_BASE_URL ?? appUrl;
 const databaseUrl =
   process.env.DATABASE_URL ??
