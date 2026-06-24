@@ -1,4 +1,5 @@
 import "dotenv/config";
+import { createServer } from "node:http";
 import {
   ActionRowBuilder,
   ButtonBuilder,
@@ -31,6 +32,16 @@ const databaseUrl =
   process.env.POSTGRES_URL ??
   process.env.NEON_DATABASE_URL ??
   "";
+const healthPort = Number(process.env.PORT ?? 0);
+
+if (healthPort > 0) {
+  createServer((_request, response) => {
+    response.writeHead(200, { "content-type": "text/plain; charset=utf-8" });
+    response.end("Nalyy Gate bot online\n");
+  }).listen(healthPort, "0.0.0.0", () => {
+    console.log(`Nalyy Gate bot health check listening on ${healthPort}`);
+  });
+}
 const pendingPanels = new Map<string, { title?: string; description?: string }>();
 const db = prisma as typeof prisma & {
   guildSetting: {
